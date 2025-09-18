@@ -1,0 +1,9 @@
+package com.example.est_bootcamp.repo;
+
+import com.example.est_bootcamp.core.BaseRepository;
+import com.example.est_bootcamp.org.Department;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface DepartmentRepository extends BaseRepository<Department, Long> {
+}
