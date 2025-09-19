@@ -9,12 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class AttendanceService {
     private final AttendanceRepository repo;
 
     @Transactional
-    public Attendance checkIn(Employee emp){
+    public Attendance checkIn(Employee emp) {
         var today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         Attendance att = repo.findByEmployeeIdAndWorkDate(emp.getId(), today).orElse(
                 Attendance.builder().id(null).employee(emp).workDate(today).useYn("Y").build()
@@ -24,7 +25,7 @@ public class AttendanceService {
     }
 
     @Transactional
-    public Attendance checkOut(Employee emp){
+    public Attendance checkOut(Employee emp) {
         var today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         Attendance att = repo.findByEmployeeIdAndWorkDate(emp.getId(), today).orElseThrow();
         att.setCheckOut(LocalDateTime.now());

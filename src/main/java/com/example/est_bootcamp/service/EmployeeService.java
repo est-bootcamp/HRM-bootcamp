@@ -14,7 +14,7 @@ public class EmployeeService extends BaseService<Employee, Long> {
     private final EmployeeRepository repo;
 
     @Override
-    protected JpaRepository<Employee, Long> getRepository(){
+    protected JpaRepository<Employee, Long> getRepository() {
         return repo;
     }
 }

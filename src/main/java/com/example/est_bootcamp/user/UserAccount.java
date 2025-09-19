@@ -3,10 +3,11 @@ package com.example.est_bootcamp.user;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="US")
+@Table(name = "US")
 @Getter
 @Setter
 @Builder
@@ -15,16 +16,16 @@ import java.time.LocalDateTime;
 
 public class UserAccount {
     @Id
-    @Column(name="us_no")
+    @Column(name = "us_no")
     private Long id;
 
-    @Column(name="login_id", nullable=false, unique=true, length=50)
+    @Column(name = "login_id", nullable = false, unique = true, length = 50)
     private String loginId;
 
-    @Column(name="password", nullable=false, length=255)
+    @Column(name = "password", nullable = false, length = 255)
     private String passwordHash;
 
-    @Column(name="use_yn", nullable=false, length=1)
+    @Column(name = "use_yn", nullable = false, length = 1)
     private String useYn;
 
     @Comment("감사/감시용")

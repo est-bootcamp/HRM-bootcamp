@@ -7,6 +7,7 @@ import jakarta.servlet.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.Collections;
 
@@ -15,7 +16,9 @@ public class JwtAuthFilter extends GenericFilter {
 
     private final JwtTokenProvider provider;
 
-    public JwtAuthFilter(JwtTokenProvider provider) { this.provider = provider; }
+    public JwtAuthFilter(JwtTokenProvider provider) {
+        this.provider = provider;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -29,7 +32,8 @@ public class JwtAuthFilter extends GenericFilter {
                 var authToken = new UsernamePasswordAuthenticationToken(
                         c.getSubject(), null, Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         chain.doFilter(request, response);
     }

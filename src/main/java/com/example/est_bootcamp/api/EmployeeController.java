@@ -15,7 +15,7 @@ public class EmployeeController extends BaseController<Employee, Long> {
     private final EmployeeService service;
 
     @Override
-    protected BaseService<Employee, Long> getService(){
+    protected BaseService<Employee, Long> getService() {
         return service;
     }
 }

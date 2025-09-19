@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name="PST")
+@Table(name = "PST")
 @Getter
 @Setter
 @Builder
@@ -13,18 +13,18 @@ import lombok.*;
 
 public class Position {
     @Id
-    @Column(name="pst_id")
+    @Column(name = "pst_id")
     private Long id;
 
-    @Column(name="pst_code", nullable=false, length=20)
+    @Column(name = "pst_code", nullable = false, length = 20)
     private String code;
 
-    @Column(name="pst_name", nullable=false, length=40)
+    @Column(name = "pst_name", nullable = false, length = 40)
     private String name;
 
-    @Column(name="level")
+    @Column(name = "level")
     private Integer level;
 
-    @Column(name="use_yn", nullable=false, length=1)
+    @Column(name = "use_yn", nullable = false, length = 1)
     private String useYn;
 }

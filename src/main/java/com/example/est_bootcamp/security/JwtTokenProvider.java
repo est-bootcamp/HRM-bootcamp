@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class JwtTokenProvider {
         this.validityMillis = validitySeconds * 1000;
     }
 
-    public String createToken(String subject, Map<String, Object> claims){
+    public String createToken(String subject, Map<String, Object> claims) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(subject)
@@ -30,7 +31,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Jws<Claims> parse(String token){
+    public Jws<Claims> parse(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
     }
 }

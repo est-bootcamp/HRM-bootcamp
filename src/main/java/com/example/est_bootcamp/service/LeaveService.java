@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class LeaveService {
     private final LeaveRequestRepository repo;
 
