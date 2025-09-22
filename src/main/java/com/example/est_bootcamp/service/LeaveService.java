@@ -51,7 +51,7 @@ public class LeaveService {
     @Transactional
     public LeaveRequest approve(Long leaveId, Employee approver) {
         LeaveRequest lv = repo.findById(leaveId).orElseThrow();
-        if (!lv.getApprover().getId().equals(approver.getId())) {
+        if (!lv.getApprover().getEmpId().equals(approver.getEmpId())) {
             throw new SecurityException("Not the designated approver");
         }
         lv.setStatus(LeaveStatus.APPROVED);
@@ -61,7 +61,7 @@ public class LeaveService {
     @Transactional
     public LeaveRequest reject(Long leaveId, Employee approver) {
         LeaveRequest lv = repo.findById(leaveId).orElseThrow();
-        if (!lv.getApprover().getId().equals(approver.getId())) {
+        if (!lv.getApprover().getEmpId().equals(approver.getEmpId())) {
             throw new SecurityException("Not the designated approver");
         }
         lv.setStatus(LeaveStatus.REJECTED);

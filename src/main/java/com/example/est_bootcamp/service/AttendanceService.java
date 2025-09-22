@@ -17,7 +17,7 @@ public class AttendanceService {
     @Transactional
     public Attendance checkIn(Employee emp) {
         var today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        Attendance att = repo.findByEmployeeIdAndWorkDate(emp.getId(), today).orElse(
+        Attendance att = repo.findByEmployeeEmpIdAndWorkDate(emp.getEmpId(), today).orElse(
                 Attendance.builder().id(null).employee(emp).workDate(today).useYn("Y").build()
         );
         att.setCheckIn(LocalDateTime.now());
@@ -27,7 +27,7 @@ public class AttendanceService {
     @Transactional
     public Attendance checkOut(Employee emp) {
         var today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        Attendance att = repo.findByEmployeeIdAndWorkDate(emp.getId(), today).orElseThrow();
+        Attendance att = repo.findByEmployeeEmpIdAndWorkDate(emp.getEmpId(), today).orElseThrow();
         att.setCheckOut(LocalDateTime.now());
         return repo.save(att);
     }

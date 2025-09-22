@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface AttendanceRepository extends BaseRepository<Attendance, Long> {
 
     // Employee 엔티티와 WorkDate 기준으로 조회
-    Optional<Attendance> findByEmployeeIdAndWorkDate(Long employeeId, LocalDate workDate);
+    Optional<Attendance> findByEmployeeEmpIdAndWorkDate(Long empId, LocalDate workDate);
 }

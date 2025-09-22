@@ -13,6 +13,7 @@ import lombok.*;
 
 public class Position {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL의 AUTO_INCREMENT
     @Column(name = "pst_id")
     private Long id;
 

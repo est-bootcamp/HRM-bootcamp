@@ -28,7 +28,10 @@ public class Attendance {
     @Column(name = "work_date", nullable = false)
     private LocalDate workDate;
 
+    @Column(name = "check_in")
     private LocalDateTime checkIn;
+
+    @Column(name = "check_out")
     private LocalDateTime checkOut;
 
     @Column(length = 1, nullable = false)

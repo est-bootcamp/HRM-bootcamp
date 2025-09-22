@@ -13,6 +13,7 @@ import lombok.*;
 
 public class Department {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL의 AUTO_INCREMENT
     @Column(name = "dpr_id")
     private Long id;
 
@@ -24,4 +25,8 @@ public class Department {
 
     @Column(name = "use_yn", nullable = false, length = 1)
     private String useYn;
+
+    public Department(String name) {
+        this.name = name;
+    }
 }
