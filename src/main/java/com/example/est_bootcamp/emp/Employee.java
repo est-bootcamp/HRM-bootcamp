@@ -25,7 +25,7 @@ public class Employee {
 
     // 사용자(FK)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "us_no")
+    @JoinColumn(name = "us_no", unique = true)
     private UserAccount userAccount;
 
     // 부서(FK)
