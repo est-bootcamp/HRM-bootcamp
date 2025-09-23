@@ -14,10 +14,11 @@ public class JwtTokenProvider {
     private final Key key;
     private final long validityMillis;
 
-    public JwtTokenProvider(@Value("${app.jwt.secret}") String secret,
-                            @Value("${app.jwt.access-token-validity-seconds}") long validitySeconds) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validityMillis = validitySeconds * 1000;
+    public JwtTokenProvider(
+            @Value("${app.jwt.secret}") String secret,
+            @Value("${app.jwt.access-token-validity-seconds}") long validitySeconds) {
+            this.key = Keys.hmacShaKeyFor(secret.getBytes());
+            this.validityMillis = validitySeconds * 1000;
     }
 
     public String createToken(String subject, Map<String, Object> claims) {
