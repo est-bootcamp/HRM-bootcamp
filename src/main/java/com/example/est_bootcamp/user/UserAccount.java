@@ -1,50 +1,29 @@
 package com.example.est_bootcamp.user;
 
-import com.example.est_bootcamp.emp.Employee;
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "US")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
+@ToString
 public class UserAccount {
+    private Long usNo;        // 회원번호 (PK)
+    private String loginId;   // 로그인 ID
+    private String password;  // 비밀번호
+    private String regIp;     // 최초등록아이피
+    private String regDate;   // 생성일시
+    private Long regUsId;     // 최초등록사용자
+    private String modIp;     // 수정시등록아이피
+    private String modDate;   // 최종수정일시
+    private Long modUsId;     // 최종수정사용자
+    private String useYn;     // 사용여부 (Y/N)
+    private String note;      // 비고
+    private String usRole;    // 사용자 권한
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "us_no")
-    private Long id;
-
-    @Column(name = "login_id", nullable = false, unique = true, length = 50)
-    private String loginId;
-
-    @Column(name = "password", nullable = false, length = 255)
-    private String password;  // BCrypt 암호화된 비밀번호
-
-    @Column(name = "enabled", nullable = false)
-    private boolean enabled = true;
-
-    @CreatedDate
-    @Column(name = "reg_date", updatable = false)
-    @Comment("등록일")
-    private LocalDateTime regDate;
-
-    @LastModifiedDate
-    @Column(name = "mod_date")
-    @Comment("최종 수정일")
-    private LocalDateTime modDate;
-
-    // ✅ Employee 와 1:1 양방향 매핑
-    @OneToOne(mappedBy = "userAccount", fetch = FetchType.LAZY)
-    private Employee employee;
+    // ✅ UserDetails isEnabled() 대응
+    public boolean isEnabled() {
+        return "Y".equalsIgnoreCase(this.useYn);
+    }
 }

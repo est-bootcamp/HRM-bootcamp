@@ -1,34 +1,23 @@
 package com.example.est_bootcamp.lawyer;
 
-import com.example.est_bootcamp.emp.Employee;
-import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass // 테이블은 안 만들고, 공통 매핑만 제공
-public abstract class BaseLawyerProfile {
+@Builder
+@ToString
+public class BaseLawyerProfile {
 
-    @Id
-    @Column(name = "emp_id")
-    private Long id; // EMP FK와 동일 PK
-
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "emp_id")
-    private Employee employee;
-
-    @Column(length = 255)
-    private String background;   // 출신(검사/판사/경찰 등)
-
-    @Column(length = 100)
+    private Long empId;          // EMP FK = PK
+    private String background;   // 이력/경력
     private String education;    // 학력
-
-    @Column(length = 50)
     private String licenseNo;    // 변호사등록번호
+    private String practiceId;   // 업무분야
 
-    @Column(length = 40)
-    private String practiceId;   // 업무분야 코드 (민사/형사 등)
+    private LocalDateTime createdAt; // 생성일시
+    private LocalDateTime updatedAt; // 수정일시
 }

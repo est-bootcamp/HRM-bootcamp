@@ -1,36 +1,34 @@
 package com.example.est_bootcamp.test;
 
-import com.example.est_bootcamp.common.Role;
 import com.example.est_bootcamp.emp.Employee;
 import com.example.est_bootcamp.org.Department;
 import com.example.est_bootcamp.org.Position;
-import com.example.est_bootcamp.repo.DepartmentRepository;
-import com.example.est_bootcamp.repo.EmployeeRepository;
-import com.example.est_bootcamp.repo.PositionRepository;
+import com.example.est_bootcamp.repo.DepartmentMapper;
+import com.example.est_bootcamp.repo.EmployeeMapper;
+import com.example.est_bootcamp.repo.PositionMapper;
 import org.junit.jupiter.api.*;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 DB 사용
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class EmployeeRepositoryTest {
+class EmployeeMapperTest {
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeMapper employeeMapper;
 
     @Autowired
-    private DepartmentRepository departmentRepository;
+    private DepartmentMapper departmentMapper;
 
     @Autowired
-    private PositionRepository positionRepository;
+    private PositionMapper positionMapper;
 
     private static Long savedEmpId;
     private static Department savedDept;
@@ -38,44 +36,41 @@ class EmployeeRepositoryTest {
 
     @BeforeAll
     static void setup(
-            @Autowired DepartmentRepository departmentRepository,
-            @Autowired PositionRepository positionRepository,
-            @Autowired EmployeeRepository employeeRepository
+            @Autowired DepartmentMapper departmentMapper,
+            @Autowired PositionMapper positionMapper,
+            @Autowired EmployeeMapper employeeMapper
     ) {
         // 공통 부서 저장
-        savedDept = departmentRepository.save(
-                Department.builder()
-                        .name("총무팀")
-                        .code("D-INIT")
-                        .useYn("Y")
-                        .build()
-        );
+        savedDept = Department.builder()
+                .dprName("총무팀")
+                .dprCode("D-INIT")
+                .useYn("Y")
+                .build();
+        departmentMapper.insert(savedDept);
 
         // 공통 직급 저장
-        savedPos = positionRepository.save(
-                Position.builder()
-                        .name("사원")
-                        .code("P-INIT")
-                        .useYn("Y")
-                        .build()
-        );
-
-        // 최초 직원 등록 (다른 테스트들이 사용할 대상)
-        Employee emp = Employee.builder()
-                .empName("홍길동")
-                .birthDate(LocalDate.of(1990, 5, 1))
-                .gender("M")
-                .email("hong@test.com")
-                .phoneNo("010-1234-5678")
-                .hireDate(LocalDate.now())
-                .department(savedDept)
-                .position(savedPos)
+        savedPos = Position.builder()
+                .pstName("사원")
+                .pstCode("P-INIT")
                 .useYn("Y")
-                .role(Role.STAFF)
+                .build();
+        positionMapper.insert(savedPos);
+
+        // 최초 직원 등록
+        Employee emp = Employee.builder()
+                .name("홍길동")
+                .email("hong@test.com")
+                .phone("010-1234-5678")
+                .hireDate(LocalDate.now())
+                .gender("M")
+                .dprId(savedDept.getDprId())
+                .pstId(savedPos.getPstId())
+                .status("재직중")
+                .useYn("Y")
                 .build();
 
-        Employee saved = employeeRepository.save(emp);
-        savedEmpId = saved.getEmpId();
+        employeeMapper.insert(emp);
+        savedEmpId = emp.getEmpId();
 
         System.out.println("초기 생성된 직원 ID = " + savedEmpId);
     }
@@ -84,7 +79,7 @@ class EmployeeRepositoryTest {
     @Order(2)
     @DisplayName("2. 직원 조회 (Read)")
     void testReadEmployee() {
-        Optional<Employee> empOpt = employeeRepository.findById(savedEmpId);
+        Optional<Employee> empOpt = employeeMapper.findById(savedEmpId);
 
         assertThat(empOpt).isPresent();
         assertThat(empOpt.get().getEmail()).isEqualTo("hong@test.com");
@@ -94,20 +89,22 @@ class EmployeeRepositoryTest {
     @Order(3)
     @DisplayName("3. 직원 수정 (Update)")
     void testUpdateEmployee() {
-        Employee emp = employeeRepository.findById(savedEmpId).orElseThrow();
-        emp.setEmpName("홍길동-수정");
+        Employee emp = employeeMapper.findById(savedEmpId).orElseThrow();
+        emp.setName("홍길동-수정");
 
-        Employee updated = employeeRepository.save(emp);
-        assertThat(updated.getEmpName()).isEqualTo("홍길동-수정");
+        employeeMapper.update(emp);
+
+        Employee updated = employeeMapper.findById(savedEmpId).orElseThrow();
+        assertThat(updated.getName()).isEqualTo("홍길동-수정");
     }
 
     @Test
     @Order(4)
     @DisplayName("4. 직원 삭제 (Delete)")
     void testDeleteEmployee() {
-        employeeRepository.deleteById(savedEmpId);
-        Optional<Employee> empOpt = employeeRepository.findById(savedEmpId);
+        employeeMapper.delete(savedEmpId);
 
+        Optional<Employee> empOpt = employeeMapper.findById(savedEmpId);
         assertThat(empOpt).isEmpty();
     }
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.est_bootcamp.repo.AttendanceMapper">
+
+    <resultMap id="AttendanceMap" type="com.example.est_bootcamp.att.Attendance">
+        <id property="attId" column="att_id"/>
+        <result property="empId" column="emp_id"/>
+        <result property="workDate" column="work_date"/>
+        <result property="checkIn" column="check_in"/>
+        <result property="checkOut" column="check_out"/>
+        <result property="assignId" column="assign_id"/>
+        <result property="useYn" column="use_yn"/>
+        <result property="note" column="note"/>
+    </resultMap>
+
+    <select id="findById" parameterType="long" resultMap="AttendanceMap">
+        SELECT * FROM ATT WHERE att_id = #{attId}
+    </select>
+
+    <!-- 직원 ID와 날짜로 조회 -->
+    <select id="findByEmpAndDate" resultMap="AttendanceMap">
+        SELECT * FROM ATT WHERE emp_id = #{empId} AND work_date = #{workDate}
+    </select>
+
+    <insert id="insert" parameterType="com.example.est_bootcamp.att.Attendance"
+            useGeneratedKeys="true" keyProperty="attId">
+        INSERT INTO ATT (
+        emp_id, work_date, check_in, check_out, assign_id, use_yn, note
+        ) VALUES (
+        #{empId}, #{workDate}, #{checkIn}, #{checkOut}, #{assignId}, #{useYn}, #{note}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.example.est_bootcamp.att.Attendance">
+        UPDATE ATT
+        SET check_in = #{checkIn},
+        check_out = #{checkOut},
+        assign_id = #{assignId},
+        use_yn = #{useYn},
+        note = #{note}
+        WHERE att_id = #{attId}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM ATT WHERE att_id = #{attId}
+    </delete>
+
+</mapper>

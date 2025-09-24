@@ -1,31 +1,18 @@
 package com.example.est_bootcamp.org;
 
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "PST")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
+@ToString
 public class Position {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL의 AUTO_INCREMENT
-    @Column(name = "pst_id")
-    private Long id;
-
-    @Column(name = "pst_code", nullable = false, length = 20)
-    private String code;
-
-    @Column(name = "pst_name", nullable = false, length = 40)
-    private String name;
-
-    @Column(name = "level")
-    private Integer level;
-
-    @Column(name = "use_yn", nullable = false, length = 1)
-    private String useYn;
+    private Long pstId;      // 직급아이디 (PK)
+    private String pstCode;  // 직급코드
+    private String pstName;  // 직급명
+    private String pstDscr;  // 직급 상세 설명
+    private Integer level;   // 직급 레벨값
+    private String useYn;    // 사용 여부 (Y/N)
 }

@@ -1,32 +1,18 @@
 package com.example.est_bootcamp.org;
 
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "DPR")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
+@ToString
 public class Department {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL의 AUTO_INCREMENT
-    @Column(name = "dpr_id")
-    private Long id;
-
-    @Column(name = "dpr_name", nullable = false, length = 100)
-    private String name;
-
-    @Column(name = "dpr_code", nullable = false, length = 20)
-    private String code;
-
-    @Column(name = "use_yn", nullable = false, length = 1)
+    private Long dprId;
+    private String dprCode;
+    private String dprName;
+    private String dprScope; // 추가
+    private String dprDscr;  // 추가
     private String useYn;
-
-    public Department(String name) {
-        this.name = name;
-    }
 }

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.est_bootcamp.repo.EmployeeMapper">
+
+    <resultMap id="EmployeeMap" type="com.example.est_bootcamp.emp.Employee">
+        <id property="empId" column="emp_id"/>
+        <result property="usNo" column="us_no"/>
+        <result property="dprId" column="dpr_id"/>
+        <result property="pstId" column="pst_id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="hireDate" column="hire_date"/>
+        <result property="resignDate" column="resign_date"/>
+        <result property="status" column="status"/>
+        <result property="address" column="address"/>
+        <result property="gender" column="gender"/>
+        <result property="regIp" column="reg_ip"/>
+        <result property="regDate" column="reg_date"/>
+        <result property="regUsId" column="reg_us_id"/>
+        <result property="modIp" column="mod_ip"/>
+        <result property="modDate" column="mod_date"/>
+        <result property="modUsId" column="mod_us_id"/>
+        <result property="useYn" column="use_yn"/>
+        <result property="note" column="note"/>
+
+        <!-- ✅ Role 매핑 (US 테이블 조인) -->
+        <result property="role" column="us_role" javaType="com.example.est_bootcamp.common.Role"/>
+    </resultMap>
+
+    <!-- 직원 단건 조회 -->
+    <select id="findById" parameterType="long" resultMap="EmployeeMap">
+        SELECT e.*, u.us_role AS role
+        FROM EMP e
+        LEFT JOIN US u ON e.us_no = u.us_no
+        WHERE e.emp_id = #{empId}
+    </select>
+
+    <!-- 전체 조회 -->
+    <select id="findAll" resultMap="EmployeeMap">
+        SELECT * FROM EMP
+    </select>
+
+    <!-- 사용자 번호 기반 조회 -->
+    <select id="findByUserNo" parameterType="long" resultMap="EmployeeMap">
+        SELECT * FROM EMP WHERE us_no = #{usNo}
+    </select>
+
+    <!-- 직원 등록 -->
+    <insert id="insert" parameterType="com.example.est_bootcamp.emp.Employee"
+            useGeneratedKeys="true" keyProperty="empId">
+        INSERT INTO EMP (
+        us_no, dpr_id, pst_id, name, email, phone, hire_date, resign_date,
+        status, address, gender, reg_ip, reg_date, reg_us_id,
+        mod_ip, mod_date, mod_us_id, use_yn, note
+        )
+        VALUES (
+        #{usNo}, #{dprId}, #{pstId}, #{name}, #{email}, #{phone}, #{hireDate}, #{resignDate},
+        #{status}, #{address}, #{gender}, #{regIp}, #{regDate}, #{regUsId},
+        #{modIp}, #{modDate}, #{modUsId}, #{useYn}, #{note}
+        )
+    </insert>
+
+    <!-- 직원 수정 -->
+    <update id="update" parameterType="com.example.est_bootcamp.emp.Employee">
+        UPDATE EMP
+        SET us_no     = #{usNo},
+        dpr_id    = #{dprId},
+        pst_id    = #{pstId},
+        name      = #{name},
+        email     = #{email},
+        phone     = #{phone},
+        hire_date = #{hireDate},
+        resign_date = #{resignDate},
+        status    = #{status},
+        address   = #{address},
+        gender    = #{gender},
+        reg_ip    = #{regIp},
+        reg_date  = #{regDate},
+        reg_us_id = #{regUsId},
+        mod_ip    = #{modIp},
+        mod_date  = #{modDate},
+        mod_us_id = #{modUsId},
+        use_yn    = #{useYn},
+        note      = #{note}
+        WHERE emp_id = #{empId}
+    </update>
+
+    <!-- 직원 삭제 -->
+    <delete id="delete" parameterType="long">
+        DELETE FROM EMP WHERE emp_id = #{empId}
+    </delete>
+
+</mapper>

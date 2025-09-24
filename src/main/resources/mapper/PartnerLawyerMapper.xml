@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.est_bootcamp.repo.PartnerLawyerMapper">
+
+    <resultMap id="PartnerLawyerMap" type="com.example.est_bootcamp.lawyer.PartnerLawyer">
+        <id property="empId" column="emp_id"/>
+        <result property="background" column="background"/>
+        <result property="education" column="education"/>
+        <result property="licenseNo" column="license_no"/>
+        <result property="practiceId" column="practice_id"/>
+        <result property="regIp" column="reg_ip"/>
+        <result property="regDate" column="reg_date"/>
+        <result property="regUsId" column="reg_us_id"/>
+        <result property="modIp" column="mod_ip"/>
+        <result property="modDate" column="mod_date"/>
+        <result property="modUsId" column="mod_us_id"/>
+        <result property="useYn" column="use_yn"/>
+        <result property="note" column="note"/>
+    </resultMap>
+
+    <!-- 단건 조회 -->
+    <select id="findById" parameterType="long" resultMap="PartnerLawyerMap">
+        SELECT * FROM PR_LW WHERE emp_id = #{empId}
+    </select>
+
+    <!-- 전체 조회 -->
+    <select id="findAll" resultMap="PartnerLawyerMap">
+        SELECT * FROM PR_LW
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="com.example.est_bootcamp.lawyer.PartnerLawyer">
+        INSERT INTO PR_LW (
+        emp_id, background, education, license_no, practice_id,
+        reg_ip, reg_date, reg_us_id, mod_ip, mod_date, mod_us_id,
+        use_yn, note
+        ) VALUES (
+        #{empId}, #{background}, #{education}, #{licenseNo}, #{practiceId},
+        #{regIp}, #{regDate}, #{regUsId}, #{modIp}, #{modDate}, #{modUsId},
+        #{useYn}, #{note}
+        )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="com.example.est_bootcamp.lawyer.PartnerLawyer">
+        UPDATE PR_LW
+        SET background = #{background},
+        education = #{education},
+        license_no = #{licenseNo},
+        practice_id = #{practiceId},
+        reg_ip = #{regIp},
+        reg_date = #{regDate},
+        reg_us_id = #{regUsId},
+        mod_ip = #{modIp},
+        mod_date = #{modDate},
+        mod_us_id = #{modUsId},
+        use_yn = #{useYn},
+        note = #{note}
+        WHERE emp_id = #{empId}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="long">
+        DELETE FROM PR_LW WHERE emp_id = #{empId}
+    </delete>
+
+</mapper>
