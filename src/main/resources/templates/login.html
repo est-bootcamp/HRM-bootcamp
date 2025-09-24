@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>HRD Bootcamp | Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="#"><b>HRD</b>Bootcamp</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">로그인 해주세요</p>
+
+            <!-- Ajax 기반 로그인 -->
+            <form id="loginForm">
+                <div class="input-group mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="아이디" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text"><span class="fas fa-user"></span></div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="비밀번호" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text"><span class="fas fa-lock"></span></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember Me</label>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                    </div>
+                </div>
+            </form>
+
+            <p class="mb-1">
+                <a href="#">비밀번호를 잊으셨나요?</a>
+            </p>
+            <p class="mb-0">
+                <a href="#" class="text-center">회원가입</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/dist/js/adminlte.min.js"></script>
+
+<script>
+    $("#loginForm").on("submit", function(e) {
+        e.preventDefault();
+
+        const data = {
+            username: $("input[name='username']").val(),
+            password: $("input[name='password']").val()
+        };
+
+        $.ajax({
+            url: "/api/auth/login",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(res) {
+                // JWT 토큰 저장
+                localStorage.setItem("accessToken", res.accessToken);
+
+                // 알림 띄우고 메인 페이지로 이동
+                alert("로그인 성공!");
+                window.location.href = "/main.html";
+            },
+            error: function(err) {
+                alert("로그인 실패: " + (err.responseJSON?.error || "다시 시도해주세요"));
+            }
+        });
+    });
+</script>
+</body>
+</html>
