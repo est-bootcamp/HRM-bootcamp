@@ -16,13 +16,13 @@ public class AttendanceController {
 
     @PostMapping("/{empId}/check-in")
     public Attendance checkIn(@PathVariable Long empId) {
-        Employee emp = employeeService.findById(empId);
+        Employee emp = employeeService.getById(empId);
         return attendanceService.checkIn(emp);
     }
 
     @PostMapping("/{empId}/check-out")
     public Attendance checkOut(@PathVariable Long empId) {
-        Employee emp = employeeService.findById(empId);
+        Employee emp = employeeService.getById(empId);
         return attendanceService.checkOut(emp);
     }
 }

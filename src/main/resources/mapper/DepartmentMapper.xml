@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.est_bootcamp.repo.DepartmentMapper">
+
+    <resultMap id="DepartmentMap" type="com.example.est_bootcamp.org.Department">
+        <id property="dprId" column="dpr_id"/>
+        <result property="dprCode" column="dpr_code"/>
+        <result property="dprName" column="dpr_name"/>
+        <result property="dprScope" column="dpr_scope"/>
+        <result property="dprDscr" column="dpr_dscr"/>
+        <result property="useYn" column="use_yn"/>
+    </resultMap>
+
+    <!-- 단건 조회 -->
+    <select id="findById" parameterType="long" resultMap="DepartmentMap">
+        SELECT * FROM DPR WHERE dpr_id = #{dprId}
+    </select>
+
+    <!-- 전체 조회 -->
+    <select id="findAll" resultMap="DepartmentMap">
+        SELECT * FROM DPR
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="com.example.est_bootcamp.org.Department"
+            useGeneratedKeys="true" keyProperty="dprId">
+        INSERT INTO DPR (dpr_code, dpr_name, dpr_scope, dpr_dscr, use_yn)
+        VALUES (#{dprCode}, #{dprName}, #{dprScope}, #{dprDscr}, #{useYn})
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="com.example.est_bootcamp.org.Department">
+        UPDATE DPR
+        SET dpr_code  = #{dprCode},
+        dpr_name  = #{dprName},
+        dpr_scope = #{dprScope},
+        dpr_dscr  = #{dprDscr},
+        use_yn    = #{useYn}
+        WHERE dpr_id = #{dprId}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="long">
+        DELETE FROM DPR WHERE dpr_id = #{dprId}
+    </delete>
+
+</mapper>

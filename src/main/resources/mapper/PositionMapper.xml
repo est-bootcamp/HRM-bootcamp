@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.est_bootcamp.repo.PositionMapper">
+
+    <resultMap id="PositionMap" type="com.example.est_bootcamp.org.Position">
+        <id property="pstId" column="pst_id"/>
+        <result property="pstCode" column="pst_code"/>
+        <result property="pstName" column="pst_name"/>
+        <result property="pstDscr" column="pst_dscr"/>
+        <result property="level" column="level"/>
+        <result property="useYn" column="use_yn"/>
+    </resultMap>
+
+    <!-- 단건 조회 -->
+    <select id="findById" parameterType="long" resultMap="PositionMap">
+        SELECT * FROM PST WHERE pst_id = #{pstId}
+    </select>
+
+    <!-- 전체 조회 -->
+    <select id="findAll" resultMap="PositionMap">
+        SELECT * FROM PST
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="com.example.est_bootcamp.org.Position"
+            useGeneratedKeys="true" keyProperty="pstId">
+        INSERT INTO PST (pst_code, pst_name, pst_dscr, level, use_yn)
+        VALUES (#{pstCode}, #{pstName}, #{pstDscr}, #{level}, #{useYn})
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="com.example.est_bootcamp.org.Position">
+        UPDATE PST
+        SET pst_code = #{pstCode},
+        pst_name = #{pstName},
+        pst_dscr = #{pstDscr},
+        level = #{level},
+        use_yn = #{useYn}
+        WHERE pst_id = #{pstId}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="long">
+        DELETE FROM PST WHERE pst_id = #{pstId}
+    </delete>
+
+</mapper>

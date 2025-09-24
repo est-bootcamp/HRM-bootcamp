@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.est_bootcamp.repo.LawyerProfileMapper">
+
+    <resultMap id="LawyerProfileMap" type="com.example.est_bootcamp.lawyer.BaseLawyerProfile">
+        <id property="empId" column="emp_id"/>
+        <result property="background" column="background"/>
+        <result property="education" column="education"/>
+        <result property="licenseNo" column="license_no"/>
+        <result property="practiceId" column="practice_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 단건 조회 -->
+    <select id="findById" parameterType="long" resultMap="LawyerProfileMap">
+        SELECT * FROM LW_PR WHERE emp_id = #{empId}
+    </select>
+
+    <!-- 전체 조회 -->
+    <select id="findAll" resultMap="LawyerProfileMap">
+        SELECT * FROM LW_PR
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="com.example.est_bootcamp.lawyer.BaseLawyerProfile">
+        INSERT INTO LW_PR (emp_id, background, education, license_no, practice_id)
+        VALUES (#{empId}, #{background}, #{education}, #{licenseNo}, #{practiceId})
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="com.example.est_bootcamp.lawyer.BaseLawyerProfile">
+        UPDATE LW_PR
+        SET background = #{background},
+        education = #{education},
+        license_no = #{licenseNo},
+        practice_id = #{practiceId}
+        WHERE emp_id = #{empId}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="long">
+        DELETE FROM LW_PR WHERE emp_id = #{empId}
+    </delete>
+
+</mapper>

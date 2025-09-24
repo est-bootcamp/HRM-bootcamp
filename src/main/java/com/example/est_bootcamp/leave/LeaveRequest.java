@@ -1,46 +1,40 @@
 package com.example.est_bootcamp.leave;
 
-import com.example.est_bootcamp.emp.Employee;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "LV_RQ")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
+@ToString
 public class LeaveRequest {
-    @Id
-    @Column(name = "lv_id")
-    private Long id;
 
-    @Column(name = "lv_ty", nullable = false)
-    private Long leaveTypeCode; // LV_RQ_CD.lv_ty FK (단순화: 코드 값만)
+    private Long lvId;              // 휴가신청아이디
+    private Long leaveTypeCode;     // 휴가유형 (lv_ty)
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "app_emp_id", nullable = false)
-    private Employee approver; // 승인자
+    private Long appEmpId;          // 승인자아이디
+    private Long rqsEmpId;          // 신청자아이디
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rqs_emp_id", nullable = false)
-    private Employee requester; // 신청자
+    private LocalDate startDate;    // 휴가 시작일
+    private LocalDate endDate;      // 휴가 종료일
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LeaveStatus status;     // 신청/승인 상태 (Enum)
 
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    private LocalDateTime requestDate; // 신청일시
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private LeaveStatus status; // REQUESTED/APPROVED/REJECTED/CANCELED
+    // 등록/수정 공통
+    private String regIp;
+    private LocalDateTime regDate;
+    private Long regUsId;
 
-    @Column(name = "request_date", nullable = false)
-    private LocalDateTime requestDate;
+    private String modIp;
+    private LocalDateTime modDate;
+    private Long modUsId;
+
+    private String useYn;       // 사용 여부 (Y/N)
+    private String note;        // 비고
 }

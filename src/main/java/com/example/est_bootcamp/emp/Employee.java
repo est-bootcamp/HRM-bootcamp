@@ -1,77 +1,42 @@
 package com.example.est_bootcamp.emp;
 
 import com.example.est_bootcamp.common.Role;
-import com.example.est_bootcamp.org.Department;
-import com.example.est_bootcamp.org.Position;
-import com.example.est_bootcamp.user.UserAccount;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "EMP")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Employee {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // PK 자동 증가라면 추가
-    @Column(name = "emp_id")
-    private Long empId;
+    private Long empId;      // PK
+    private Long usNo;       // 회원번호
+    private Long dprId;      // 부서 ID
+    private Long pstId;      // 직급 ID
 
-    // 사용자(FK)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "us_no", unique = true)
-    private UserAccount userAccount;
+    private String name;     // 이름
+    private String email;    // 이메일
+    private String phone;    // 연락처
+    private LocalDate hireDate;    // 입사일
+    private LocalDate resignDate;  // 퇴사일
+    private String status;   // 재직 상태
+    private String address;  // 주소
+    private String gender;   // 성별 (M/F)
 
-    // 부서(FK)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dpr_id", nullable = false)
-    private Department department;
+    private String regIp;    // 최초 등록 아이피
+    private LocalDate regDate;   // 생성일시
+    private Long regUsId;    // 최초 등록 사용자
 
-    // 직급(FK)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pst_id", nullable = false)
-    private Position position;
+    private String modIp;    // 수정 시 등록 아이피
+    private LocalDate modDate;   // 최종 수정일시
+    private Long modUsId;    // 최종 수정 사용자
 
-    // 직원명
-    @Column(name = "emp_name", nullable = false, length = 100)
-    private String empName;
+    private String useYn;    // Y/N
+    private String note;     // 비고
 
-    // 이메일
-    @Column(nullable = false, length = 100)
-    private String email;
-
-    // 역할
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private Role role; // ADMIN / OWNER / PARTNER / STAFF
-
-    // 생년월일
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
-
-    // 전화번호
-    @Column(name = "phone_no", length = 20)
-    private String phoneNo;
-
-    // 입사일 / 퇴사일
-    @Column(name = "hire_date")
-    private LocalDate hireDate;
-
-    @Column(name = "resign_date")
-    private LocalDate resignDate;
-
-    // 성별
-    @Column(length = 1, nullable = false)
-    private String gender;
-
-    // 사용 여부
-    @Column(name = "use_yn", length = 1, nullable = false)
-    private String useYn;
-
+    private Role role;
 }
