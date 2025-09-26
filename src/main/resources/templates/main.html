@@ -7,9 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
+
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -97,8 +96,16 @@
 </div>
 
 <!-- JS -->
+<!-- ✅ jQuery 먼저 -->
 <script src="/plugins/jquery/jquery.min.js"></script>
+
+<!-- ✅ Bootstrap (jQuery 필요) -->
 <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- ✅ AdminLTE Core -->
 <script src="/dist/js/adminlte.min.js"></script>
+
+<!-- ✅ 페이지별 스크립트 -->
+<script src="/dist/js/pages/ControlSidebar.js"></script>
 </body>
 </html>

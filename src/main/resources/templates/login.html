@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>HRD Bootcamp | Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+    <!-- ✅ CSS (static/css, static/dist/js 기준) -->
+    <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -20,10 +18,12 @@
         <div class="card-body login-card-body">
             <p class="login-box-msg">로그인 해주세요</p>
 
-            <!-- Ajax 기반 로그인 -->
-            <form id="loginForm">
+            <!-- ✅ Spring Security formLogin -->
+            <form th:action="@{/doLogin}" method="post">
+                <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+
                 <div class="input-group mb-3">
-                    <input type="text" name="username" class="form-control" placeholder="아이디" required>
+                    <input type="text" name="loginId" class="form-control" placeholder="아이디" required>
                     <div class="input-group-append">
                         <div class="input-group-text"><span class="fas fa-user"></span></div>
                     </div>
@@ -47,48 +47,28 @@
                 </div>
             </form>
 
-            <p class="mb-1">
-                <a href="#">비밀번호를 잊으셨나요?</a>
-            </p>
-            <p class="mb-0">
-                <a href="#" class="text-center">회원가입</a>
-            </p>
+            <!-- ✅ 로그인 에러 메시지 표시 -->
+            <div th:if="${param.error}" class="text-danger mt-2">
+                아이디 또는 비밀번호가 올바르지 않습니다.
+            </div>
+            <div th:if="${param.logout}" class="text-success mt-2">
+                로그아웃되었습니다.
+            </div>
         </div>
     </div>
 </div>
 
-<!-- JS -->
-<script src="/plugins/jquery/jquery.min.js"></script>
-<script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/dist/js/adminlte.min.js"></script>
+<!-- ✅ JS -->
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 
-<script>
-    $("#loginForm").on("submit", function(e) {
-        e.preventDefault();
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
-        const data = {
-            username: $("input[name='username']").val(),
-            password: $("input[name='password']").val()
-        };
+<!-- AdminLTE -->
+<script th:src="@{/dist/js/adminlte.min.js}"></script>
 
-        $.ajax({
-            url: "/api/auth/login",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function(res) {
-                // JWT 토큰 저장
-                localStorage.setItem("accessToken", res.accessToken);
-
-                // 알림 띄우고 메인 페이지로 이동
-                alert("로그인 성공!");
-                window.location.href = "/main.html";
-            },
-            error: function(err) {
-                alert("로그인 실패: " + (err.responseJSON?.error || "다시 시도해주세요"));
-            }
-        });
-    });
-</script>
+<!-- 페이지별 JS (예: ControlSidebar.js) -->
+<script th:src="@{/dist/js/pages/ControlSidebar.js}"></script>
 </body>
 </html>

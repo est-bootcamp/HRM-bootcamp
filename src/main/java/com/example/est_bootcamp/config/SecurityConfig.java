@@ -9,28 +9,37 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-
+        http
+                // CSRF 비활성화 (테스트용, 실서비스에서는 활성화 권장)
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll() // 로그인, 정적 리소스 허용
-                        .anyRequest().authenticated() // 나머지는 인증 필요
+                        .requestMatchers(
+                                "/login", "/doLogin", "/css/**", "/js/**", "/dist/**", "/plugins/**", "/images/**", "/webjars/**"
+                        ).permitAll().requestMatchers("/main").authenticated()
+                        .anyRequest().authenticated()        // 나머지는 인증 필요
                 )
 
+                // 로그인 설정
                 .formLogin(form -> form
-                        .loginPage("/login")              // 로그인 페이지 (GET)
-                        .loginProcessingUrl("/login")     // 로그인 요청 처리 (POST)
-                        .defaultSuccessUrl("/main", true) // 로그인 성공 시 이동
-                        .failureUrl("/login?error=true")  // 실패 시 다시 로그인 페이지
+                        .loginPage("/login")               // GET 요청 → 로그인 폼
+                        .loginProcessingUrl("/doLogin")    // POST 요청 → 스프링이 처리
+                        .usernameParameter("loginId")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/main")      // 성공 시 이동
+                        .failureUrl("/login?error=true")   // 실패 시
                         .permitAll()
                 )
 
+                // 로그아웃 설정
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
@@ -39,11 +48,13 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // AuthenticationManager Bean (사용자 인증 서비스와 PasswordEncoder 연동)
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
         return cfg.getAuthenticationManager();
     }
 
+    // 비밀번호 암호화용 Bean
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>User Detail</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700">
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Page header -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>User Detail</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{/users}">Users</a></li>
+                            <li class="breadcrumb-item active">Detail</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="card card-solid">
+                <div class="card-body pb-0">
+                    <div class="row d-flex align-items-stretch">
+                        <div class="col-12 d-flex align-items-stretch">
+                            <div class="card bg-light w-100">
+                                <div class="card-header text-muted border-bottom-0">
+                                    사용자 번호: <span th:text="${user.usNo}"></span>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <h2 class="lead"><b th:text="${user.loginId}">로그인ID</b></h2>
+                                            <p class="text-muted text-sm">
+                                                <b>권한:</b> <span th:text="${user.usRole}"></span>
+                                            </p>
+                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-lg fa-check-circle"></i></span>
+                                                    사용 여부: <span th:text="${user.useYn}"></span>
+                                                </li>
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-lg fa-calendar"></i></span>
+                                                    등록일: <span th:text="${user.regDate}"></span>
+                                                </li>
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-lg fa-edit"></i></span>
+                                                    최종 수정일: <span th:text="${user.modDate}"></span>
+                                                </li>
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-lg fa-sticky-note"></i></span>
+                                                    비고: <span th:text="${user.note}"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-5 text-center">
+                                            <img th:src="@{/dist/img/user1-128x128.jpg}" alt="User avatar" class="img-circle img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="text-right">
+                                        <a th:href="@{/users}" class="btn btn-sm btn-secondary">
+                                            <i class="fas fa-arrow-left"></i> 목록
+                                        </a>
+                                        <a th:href="@{|/users/${user.usNo}/edit|}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-user-edit"></i> 수정
+                                        </a>
+                                        <form th:action="@{|/users/${user.usNo}/delete|}" method="post" style="display:inline">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i> 삭제
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.min.js}"></script>
+</body>
+</html>

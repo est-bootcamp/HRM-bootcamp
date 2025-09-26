@@ -26,4 +26,5 @@ public class UserAccount {
     public boolean isEnabled() {
         return "Y".equalsIgnoreCase(this.useYn);
     }
+
 }

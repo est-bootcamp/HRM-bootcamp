@@ -27,13 +27,13 @@
         <result property="useYn" column="use_yn"/>
         <result property="note" column="note"/>
 
-        <!-- ✅ Role 매핑 (US 테이블 조인) -->
+        <!-- ✅ Role 매핑 -->
         <result property="role" column="us_role" javaType="com.example.est_bootcamp.common.Role"/>
     </resultMap>
 
     <!-- 직원 단건 조회 -->
     <select id="findById" parameterType="long" resultMap="EmployeeMap">
-        SELECT e.*, u.us_role AS role
+        SELECT e.*, u.us_role
         FROM EMP e
         LEFT JOIN US u ON e.us_no = u.us_no
         WHERE e.emp_id = #{empId}
@@ -41,12 +41,17 @@
 
     <!-- 전체 조회 -->
     <select id="findAll" resultMap="EmployeeMap">
-        SELECT * FROM EMP
+        SELECT e.*, u.us_role
+        FROM EMP e
+        LEFT JOIN US u ON e.us_no = u.us_no
     </select>
 
     <!-- 사용자 번호 기반 조회 -->
     <select id="findByUserNo" parameterType="long" resultMap="EmployeeMap">
-        SELECT * FROM EMP WHERE us_no = #{usNo}
+        SELECT e.*, u.us_role
+        FROM EMP e
+        LEFT JOIN US u ON e.us_no = u.us_no
+        WHERE e.us_no = #{usNo}
     </select>
 
     <!-- 직원 등록 -->

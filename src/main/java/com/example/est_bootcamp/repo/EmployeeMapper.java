@@ -10,7 +10,9 @@ import java.util.Optional;
 @Mapper
 public interface EmployeeMapper {
     Optional<Employee> findById(@Param("empId") Long empId);
+
     List<Employee> findAll();
+
     Optional<Employee> findByUserNo(@Param("usNo") Long usNo);
 
     void insert(Employee employee);
