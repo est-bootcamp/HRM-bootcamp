@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.est_bootcamp.repo.CaseMapper">
+
+    <resultMap id="caseResultMap" type="com.example.est_bootcamp.dto.Case">
+        <id property="csId" column="cs_id"/>
+        <result property="csTyId" column="cs_ty_id"/>
+        <result property="csName" column="cs_name"/>
+        <result property="clientName" column="client_name"/>
+        <result property="csStatus" column="cs_status"/>
+        <result property="regIp" column="reg_ip"/>
+        <result property="regDate" column="reg_date"/>
+        <result property="regUsId" column="reg_us_id"/>
+        <result property="modIp" column="mod_ip"/>
+        <result property="modDate" column="mod_date"/>
+        <result property="modUsId" column="mod_us_id"/>
+        <result property="useYn" column="use_yn"/>
+        <result property="note" column="note"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="caseResultMap">
+        SELECT * FROM CS WHERE use_yn = 'Y' ORDER BY reg_date DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="caseResultMap">
+        SELECT * FROM CS WHERE cs_id = #{id} AND use_yn = 'Y'
+    </select>
+
+    <insert id="insertCase" parameterType="com.example.est_bootcamp.dto.Case">
+        INSERT INTO CS (
+            cs_id, cs_ty_id, cs_name, client_name, cs_status,
+            reg_ip, reg_date, reg_us_id, use_yn, note
+        ) VALUES (
+                     #{csId}, #{csTyId}, #{csName}, #{clientName}, #{csStatus},
+                     #{regIp}, #{regDate}, #{regUsId}, 'Y', #{note}
+                 )
+    </insert>
+
+    <update id="updateCase" parameterType="com.example.est_bootcamp.dto.Case">
+        UPDATE CS
+        SET cs_ty_id = #{csTyId},
+            cs_name = #{csName},
+            client_name = #{clientName},
+            cs_status = #{csStatus},
+            mod_ip = #{modIp},
+            mod_date = #{modDate},
+            mod_us_id = #{modUsId},
+            use_yn = #{useYn},
+            note = #{note}
+        WHERE cs_id = #{csId}
+    </update>
+
+    <delete id="deleteCase" parameterType="long">
+        UPDATE CS SET use_yn = 'N' WHERE cs_id = #{id}
+    </delete>
+
+</mapper>
