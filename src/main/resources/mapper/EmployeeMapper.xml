@@ -40,8 +40,18 @@
 
     <!-- 🔽 검색 + 페이징 조회 -->
     <select id="findAllPaged" resultMap="EmployeeMap">
-        SELECT e.*
+        SELECT e.emp_id,
+        e.name,
+        e.email,
+        e.phone,
+        e.status,
+        e.dpr_id,
+        e.pst_id,
+        d.dpr_name AS dprName,   -- ✅ 부서명
+        p.pst_name AS pstName    -- ✅ 직급명
         FROM EMP e
+        LEFT JOIN DPR d ON e.dpr_id = d.dpr_id
+        LEFT JOIN PST p ON e.pst_id = p.pst_id
         <where>
             <if test="keyword != null and keyword != ''">
                 (e.name LIKE CONCAT('%', #{keyword}, '%')

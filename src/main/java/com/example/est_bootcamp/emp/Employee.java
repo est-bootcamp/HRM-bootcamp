@@ -18,6 +18,9 @@ public class Employee {
     private Long dprId;      // 부서 ID
     private Long pstId;      // 직급 ID
 
+    private String dprName;  // 부서명
+    private String pstName;  // 직급명
+
     private String name;     // 이름
     private String email;    // 이메일
     private String phone;    // 연락처

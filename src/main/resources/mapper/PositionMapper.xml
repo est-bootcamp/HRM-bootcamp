@@ -21,7 +21,11 @@
 
     <!-- 전체 조회 -->
     <select id="findAll" resultMap="PositionMap">
-        SELECT * FROM PST
+        SELECT MIN(pst_id) AS pst_id, pst_name
+        FROM PST
+        WHERE use_yn = 'Y'
+        GROUP BY pst_name
+        ORDER BY pst_name
     </select>
 
     <!-- 등록 -->

@@ -21,7 +21,11 @@
 
     <!-- 전체 조회 -->
     <select id="findAll" resultMap="DepartmentMap">
-        SELECT * FROM DPR
+        SELECT MIN(dpr_id) AS dpr_id, dpr_name
+        FROM DPR
+        WHERE use_yn = 'Y'
+        GROUP BY dpr_name
+        ORDER BY dpr_name
     </select>
 
     <!-- 등록 -->
