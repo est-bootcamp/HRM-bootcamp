@@ -27,9 +27,9 @@ public class LeaveController {
         Employee approver = employeeService.getById(req.approverId);   // ✅ 수정
 
         return leaveService.submit(
-                requester,
+                requester.getEmpId(),
                 req.leaveTypeCode,
-                approver,
+                approver.getEmpId(),
                 req.startDate,
                 req.endDate
         );
@@ -41,7 +41,7 @@ public class LeaveController {
     @PostMapping("/{id}/approve")
     public LeaveRequest approve(@PathVariable Long id, @RequestParam Long approverId) {
         Employee approver = employeeService.getById(approverId); // ✅ 수정
-        return leaveService.approve(id, approver);
+        return leaveService.approve(id, approver.getEmpId());
     }
 
     /**
@@ -50,7 +50,7 @@ public class LeaveController {
     @PostMapping("/{id}/reject")
     public LeaveRequest reject(@PathVariable Long id, @RequestParam Long approverId) {
         Employee approver = employeeService.getById(approverId); // ✅ 수정
-        return leaveService.reject(id, approver);
+        return leaveService.reject(id, approver.getEmpId());
     }
 
     /**

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>직원 등록/수정</title>
+    <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
+</head>
+<body>
+<div class="container mt-4">
+
+    <!-- ✅ 홈 버튼을 맨 위에 배치 -->
+    <div class="mb-3">
+        <a th:href="@{/main}" class="btn btn-outline-primary">🏠 홈</a>
+    </div>
+
+    <h2 th:text="${employee.empId == null ? '직원 등록' : '직원 수정'}"></h2>
+
+    <!-- ✅ 에러 메시지 표시 -->
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- 항상 /employees 로 전송 -->
+    <form th:action="@{/employees}" th:object="${employee}" method="post">
+        <input type="hidden" th:field="*{empId}">
+
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" th:field="*{name}" id="name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="email" th:field="*{email}" id="email" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">연락처</label>
+            <input type="text" th:field="*{phone}" id="phone" class="form-control">
+        </div>
+
+        <!-- ✅ 부서 선택 -->
+        <div class="form-group">
+            <label for="dprId">부서</label>
+            <select th:field="*{dprId}" id="dprId" class="form-control" required>
+                <option value="" th:if="${employee.dprId == null}" selected>-- 부서 선택 --</option>
+                <option th:each="dept : ${departments}"
+                        th:value="${dept.dprId}"
+                        th:text="${dept.dprName}">
+                </option>
+            </select>
+        </div>
+
+        <!-- ✅ 직급 선택 -->
+        <div class="form-group">
+            <label for="pstId">직급</label>
+            <select th:field="*{pstId}" id="pstId" class="form-control" required>
+                <option value="" th:if="${employee.pstId == null}" selected>-- 직급 선택 --</option>
+                <option th:each="pos : ${positions}"
+                        th:value="${pos.pstId}"
+                        th:text="${pos.pstName}">
+                </option>
+            </select>
+        </div>
+
+        <!-- ✅ 성별 선택 -->
+        <div class="form-group">
+            <label>성별</label><br>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" th:field="*{gender}" id="genderM" value="M"
+                       th:checked="${employee.gender == 'M'}" required>
+                <label class="form-check-label" for="genderM">남성</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" th:field="*{gender}" id="genderF" value="F"
+                       th:checked="${employee.gender == 'F'}">
+                <label class="form-check-label" for="genderF">여성</label>
+            </div>
+        </div>
+
+        <!-- ✅ 상태 선택 -->
+        <div class="form-group">
+            <label for="status">상태</label>
+            <select th:field="*{status}" id="status" class="form-control" required>
+                <option value="재직" th:selected="${employee.status == '재직'}">재직</option>
+                <option value="퇴사" th:selected="${employee.status == '퇴사'}">퇴사</option>
+                <option value="휴직" th:selected="${employee.status == '휴직'}">휴직</option>
+            </select>
+        </div>
+
+        <!-- ✅ 사용 여부 -->
+        <div class="form-group">
+            <label for="useYn">사용 여부</label>
+            <select th:field="*{useYn}" id="useYn" class="form-control" required>
+                <option value="Y" th:selected="${employee.useYn == 'Y'}">사용</option>
+                <option value="N" th:selected="${employee.useYn == 'N'}">미사용</option>
+            </select>
+        </div>
+
+        <!-- ✅ 버튼 영역 -->
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success">저장</button>
+            <a th:href="@{/employees}" class="btn btn-secondary">목록</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

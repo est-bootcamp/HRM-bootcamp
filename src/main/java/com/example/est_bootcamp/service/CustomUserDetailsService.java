@@ -1,7 +1,5 @@
 package com.example.est_bootcamp.service;
 
-import com.example.est_bootcamp.emp.Employee;
-import com.example.est_bootcamp.repo.EmployeeMapper;
 import com.example.est_bootcamp.repo.UserAccountMapper;
 import com.example.est_bootcamp.security.CustomUserDetails;
 import com.example.est_bootcamp.user.UserAccount;
@@ -16,16 +14,20 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserAccountMapper userAccountMapper;
-    private final EmployeeMapper employeeMapper;
 
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        UserAccount user = userAccountMapper.findByLoginId(loginId)
+        // ✅ UserAccount + Employee JOIN 조회
+        UserAccount user = userAccountMapper.findWithEmployeeByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자 없음: " + loginId));
 
-        Employee employee = employeeMapper.findByUserNo(user.getUsNo())
-                .orElseThrow(() -> new UsernameNotFoundException("직원 프로필 없음 (usNo=" + user.getUsNo() + ")"));
+        // ✅ 비밀번호 검증 (BCrypt 형식이어야 함)
+        String encodedPw = user.getPassword();
+        if (encodedPw == null || (!encodedPw.startsWith("$2a$") && !encodedPw.startsWith("$2b$"))) {
+            throw new IllegalStateException("DB에 저장된 비밀번호가 BCrypt 형식이 아닙니다. userNo=" + user.getUsNo());
+        }
 
-        return new CustomUserDetails(user, employee);
+        // ✅ CustomUserDetails 생성 (Employee 포함)
+        return new CustomUserDetails(user, user.getEmployee());
     }
 }

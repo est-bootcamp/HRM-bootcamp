@@ -4,7 +4,10 @@ import com.example.est_bootcamp.security.CustomUserDetails;
 import com.example.est_bootcamp.security.JwtTokenProvider;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +22,35 @@ public class AuthController {
     private final JwtTokenProvider provider;
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginReq req) {
-        // 1. 스프링 시큐리티 인증 실행
-        var authToken = new UsernamePasswordAuthenticationToken(req.username, req.password);
-        var auth = authenticationManager.authenticate(authToken);
+    public ResponseEntity<?> login(@RequestBody LoginReq req) {
+        try {
+            // 1. 스프링 시큐리티 인증 실행
+            var authToken = new UsernamePasswordAuthenticationToken(req.username, req.password);
+            var auth = authenticationManager.authenticate(authToken);
 
-        // 2. principal(CustomUserDetails) 꺼내기
-        var userDetails = (CustomUserDetails) auth.getPrincipal();
+            // 2. principal(CustomUserDetails) 꺼내기
+            var userDetails = (CustomUserDetails) auth.getPrincipal();
 
-        // 3. JWT 발급 (DB에 저장된 role 사용)
-        String token = provider.createToken(
-                userDetails.getUsername(),
-                Map.of("role", userDetails.getEmployee().getRole().name())
-        );
+            // 3. JWT 발급
+            String role = (userDetails.getUserAccount().getUsRole() != null)
+                    ? userDetails.getUserAccount().getUsRole().toUpperCase()
+                    : "USER";
 
-        return Map.of("accessToken", token);
+            String token = provider.createToken(
+                    userDetails.getUsername(),
+                    Map.of("role", role)
+            );
+
+            return ResponseEntity.ok(Map.of("accessToken", token));
+
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "아이디 또는 비밀번호가 올바르지 않습니다."));
+        } catch (Exception e) {
+            // 그 외 서버 오류
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류가 발생했습니다. 관리자에게 문의하세요."));
+        }
     }
 
     @Data

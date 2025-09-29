@@ -22,8 +22,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Role enum -> 권한 문자열로 변환
-        return List.of((GrantedAuthority) () -> "ROLE_" + employee.getRole().name());
+        // ✅ UserAccount.usRole을 기반으로 권한 부여
+        String role = (userAccount.getUsRole() != null)
+                ? userAccount.getUsRole().toUpperCase()
+                : "USER";
+        return List.of((GrantedAuthority) () -> "ROLE_" + role);
     }
 
     @Override

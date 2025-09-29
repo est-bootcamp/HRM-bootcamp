@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>직원 목록</title>
+    <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
+    <!-- Bootstrap 아이콘/스타일 보완용 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+
+    <!-- ✅ 홈 버튼 -->
+    <div class="mb-3">
+        <a th:href="@{/main}" class="btn btn-outline-primary">🏠 홈</a>
+    </div>
+
+    <h2>직원 목록</h2>
+
+    <!-- ✅ 검색 폼 -->
+    <form th:action="@{/employees}" method="get" class="d-flex mb-3">
+        <input type="text" name="keyword" th:value="${keyword}"
+               placeholder="이름/이메일/전화 검색"
+               class="form-control me-2 w-25">
+        <button type="submit" class="btn btn-primary">검색</button>
+    </form>
+
+    <a th:href="@{/employees/new}" class="btn btn-success mb-3">직원 등록</a>
+
+    <!-- ✅ 직원 테이블 -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>부서</th>
+            <th>직급</th>
+            <th>상태</th>
+            <th>액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp : ${employeePage.content}">
+            <td th:text="${emp.empId}"></td>
+            <td th:text="${emp.name}"></td>
+            <td th:text="${emp.email}"></td>
+            <td th:text="${emp.dprId}"></td>
+            <td th:text="${emp.pstId}"></td>
+            <td th:text="${emp.status}"></td>
+            <td>
+                <a th:href="@{'/employees/' + ${emp.empId} + '/edit'}" class="btn btn-sm btn-warning">수정</a>
+                <a th:href="@{'/employees/' + ${emp.empId} + '/delete'}"
+                   class="btn btn-sm btn-danger"
+                   onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(employeePage.content)}">
+            <td colspan="7" class="text-center">검색 결과가 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- ✅ 페이지네이션 -->
+    <nav th:if="${employeePage.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+
+            <!-- 이전 버튼 -->
+            <li class="page-item" th:classappend="${employeePage.first}? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/employees(page=${employeePage.page-1}, keyword=${keyword})}">이전</a>
+            </li>
+
+            <!-- 페이지 번호 (1부터 출력) -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(1, employeePage.totalPages)}"
+                th:classappend="${i == employeePage.page}? 'active'">
+                <a class="page-link"
+                   th:text="${i}"
+                   th:href="@{/employees(page=${i}, keyword=${keyword})}"></a>
+            </li>
+
+            <!-- 다음 버튼 -->
+            <li class="page-item" th:classappend="${employeePage.last}? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/employees(page=${employeePage.page+1}, keyword=${keyword})}">다음</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+</body>
+</html>

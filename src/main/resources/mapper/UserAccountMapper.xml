@@ -5,6 +5,7 @@
 
 <mapper namespace="com.example.est_bootcamp.repo.UserAccountMapper">
 
+    <!-- UserAccount 기본 매핑 -->
     <resultMap id="UserAccountMap" type="com.example.est_bootcamp.user.UserAccount">
         <id property="usNo" column="us_no"/>
         <result property="loginId" column="login_id"/>
@@ -19,6 +20,45 @@
         <result property="note" column="note"/>
         <result property="usRole" column="us_role"/>
     </resultMap>
+
+    <!-- UserAccount + Employee JOIN 매핑 -->
+    <resultMap id="UserAccountWithEmployeeMap" type="com.example.est_bootcamp.user.UserAccount" extends="UserAccountMap">
+        <association property="employee" javaType="com.example.est_bootcamp.emp.Employee">
+            <id property="empId" column="emp_id"/>
+            <result property="usNo" column="us_no"/>
+            <result property="dprId" column="dpr_id"/>
+            <result property="pstId" column="pst_id"/>
+            <result property="name" column="name"/>
+            <result property="email" column="email"/>
+            <result property="phone" column="phone"/>
+            <result property="hireDate" column="hire_date"/>
+            <result property="resignDate" column="resign_date"/>
+            <result property="status" column="status"/>
+            <result property="address" column="address"/>
+            <result property="gender" column="gender"/>
+            <result property="regIp" column="e_reg_ip"/>
+            <result property="regDate" column="e_reg_date"/>
+            <result property="regUsId" column="e_reg_us_id"/>
+            <result property="modIp" column="e_mod_ip"/>
+            <result property="modDate" column="e_mod_date"/>
+            <result property="modUsId" column="e_mod_us_id"/>
+            <result property="useYn" column="e_use_yn"/>
+            <result property="note" column="e_note"/>
+        </association>
+    </resultMap>
+
+    <!-- 단건 조회: loginId + Employee JOIN -->
+    <select id="findWithEmployeeByLoginId" parameterType="string" resultMap="UserAccountWithEmployeeMap">
+        SELECT u.*,
+        e.emp_id, e.us_no, e.dpr_id, e.pst_id, e.name, e.email, e.phone,
+        e.hire_date, e.resign_date, e.status, e.address, e.gender,
+        e.reg_ip AS e_reg_ip, e.reg_date AS e_reg_date, e.reg_us_id AS e_reg_us_id,
+        e.mod_ip AS e_mod_ip, e.mod_date AS e_mod_date, e.mod_us_id AS e_mod_us_id,
+        e.use_yn AS e_use_yn, e.note AS e_note
+        FROM US u
+        LEFT JOIN EMP e ON u.us_no = e.us_no
+        WHERE u.login_id = #{loginId}
+    </select>
 
     <!-- 단건 조회: loginId -->
     <select id="findByLoginId" parameterType="string" resultMap="UserAccountMap">
@@ -54,7 +94,7 @@
         mod_ip = #{modIp},
         mod_date = #{modDate},
         mod_us_id = #{modUsId},
-        use_yn = #{useYn},
+        useYn = #{useYn},
         note = #{note},
         us_role = #{usRole}
         WHERE us_no = #{usNo}

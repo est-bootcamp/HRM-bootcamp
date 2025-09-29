@@ -35,11 +35,10 @@ class EmployeeMapperTest {
     private static Position savedPos;
 
     @BeforeAll
-    static void setup(
-            @Autowired DepartmentMapper departmentMapper,
-            @Autowired PositionMapper positionMapper,
-            @Autowired EmployeeMapper employeeMapper
-    ) {
+    static void setup(@Autowired DepartmentMapper departmentMapper,
+                      @Autowired PositionMapper positionMapper,
+                      @Autowired EmployeeMapper employeeMapper) {
+
         // 공통 부서 저장
         savedDept = Department.builder()
                 .dprName("총무팀")
@@ -72,7 +71,7 @@ class EmployeeMapperTest {
         employeeMapper.insert(emp);
         savedEmpId = emp.getEmpId();
 
-        System.out.println("초기 생성된 직원 ID = " + savedEmpId);
+        System.out.println("✅ 초기 생성된 직원 ID = " + savedEmpId);
     }
 
     @Test

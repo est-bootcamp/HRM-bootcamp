@@ -26,27 +26,49 @@
         <result property="modUsId" column="mod_us_id"/>
         <result property="useYn" column="use_yn"/>
         <result property="note" column="note"/>
-
-        <!-- ✅ Role 매핑 (US 테이블 조인) -->
-        <result property="role" column="us_role" javaType="com.example.est_bootcamp.common.Role"/>
     </resultMap>
 
     <!-- 직원 단건 조회 -->
     <select id="findById" parameterType="long" resultMap="EmployeeMap">
-        SELECT e.*, u.us_role AS role
-        FROM EMP e
-        LEFT JOIN US u ON e.us_no = u.us_no
-        WHERE e.emp_id = #{empId}
+        SELECT e.* FROM EMP e WHERE e.emp_id = #{empId}
     </select>
 
     <!-- 전체 조회 -->
     <select id="findAll" resultMap="EmployeeMap">
-        SELECT * FROM EMP
+        SELECT e.* FROM EMP e
+    </select>
+
+    <!-- 🔽 검색 + 페이징 조회 -->
+    <select id="findAllPaged" resultMap="EmployeeMap">
+        SELECT e.*
+        FROM EMP e
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (e.name LIKE CONCAT('%', #{keyword}, '%')
+                OR e.email LIKE CONCAT('%', #{keyword}, '%')
+                OR e.phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY e.emp_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 🔽 검색 포함 총 건수 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM EMP e
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (e.name LIKE CONCAT('%', #{keyword}, '%')
+                OR e.email LIKE CONCAT('%', #{keyword}, '%')
+                OR e.phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
     </select>
 
     <!-- 사용자 번호 기반 조회 -->
     <select id="findByUserNo" parameterType="long" resultMap="EmployeeMap">
-        SELECT * FROM EMP WHERE us_no = #{usNo}
+        SELECT e.* FROM EMP e WHERE e.us_no = #{usNo}
     </select>
 
     <!-- 직원 등록 -->
@@ -58,34 +80,35 @@
         mod_ip, mod_date, mod_us_id, use_yn, note
         )
         VALUES (
-        #{usNo}, #{dprId}, #{pstId}, #{name}, #{email}, #{phone}, #{hireDate}, #{resignDate},
-        #{status}, #{address}, #{gender}, #{regIp}, #{regDate}, #{regUsId},
-        #{modIp}, #{modDate}, #{modUsId}, #{useYn}, #{note}
-        )
+        #{usNo}, #{dprId}, #{pstId}, #{name}, #{email}, #{phone},
+        #{hireDate}, #{resignDate}, #{status}, #{address}, #{gender},
+        #{regIp}, NOW(), #{regUsId},
+        #{modIp}, NOW(), #{modUsId},
+        #{useYn}, #{note})
     </insert>
 
     <!-- 직원 수정 -->
     <update id="update" parameterType="com.example.est_bootcamp.emp.Employee">
         UPDATE EMP
-        SET us_no     = #{usNo},
-        dpr_id    = #{dprId},
-        pst_id    = #{pstId},
-        name      = #{name},
-        email     = #{email},
-        phone     = #{phone},
+        SET us_no = #{usNo},
+        dpr_id = #{dprId},
+        pst_id = #{pstId},
+        name = #{name},
+        email = #{email},
+        phone = #{phone},
         hire_date = #{hireDate},
         resign_date = #{resignDate},
-        status    = #{status},
-        address   = #{address},
-        gender    = #{gender},
-        reg_ip    = #{regIp},
-        reg_date  = #{regDate},
+        status = #{status},
+        address = #{address},
+        gender = #{gender},
+        reg_ip = #{regIp},
+        reg_date = #{regDate},
         reg_us_id = #{regUsId},
-        mod_ip    = #{modIp},
-        mod_date  = #{modDate},
+        mod_ip = #{modIp},
+        mod_date = NOW(),
         mod_us_id = #{modUsId},
-        use_yn    = #{useYn},
-        note      = #{note}
+        use_yn = #{useYn},
+        note = #{note}
         WHERE emp_id = #{empId}
     </update>
 

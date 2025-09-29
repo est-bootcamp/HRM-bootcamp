@@ -2,7 +2,9 @@ package com.example.est_bootcamp.api;
 
 import com.example.est_bootcamp.emp.Employee;
 import com.example.est_bootcamp.service.EmployeeService;
+import com.example.est_bootcamp.service.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +17,17 @@ public class EmployeeController {
     private final EmployeeService service;
 
     /**
-     * 전체 직원 조회
+     * ✅ 직원 목록 (검색 + 페이지네이션)
+     * 예: GET /api/employees?page=1&size=10&keyword=홍길동
      */
     @GetMapping
-    public List<Employee> getAll() {
-        return service.getAll();
+    public PageResponse<Employee> getEmployees(
+            @RequestParam(defaultValue = "1") int page,   // 1부터 시작
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String keyword) {
+
+        // ✅ Service에서 페이징 처리된 데이터 가져오기
+        return service.getAllPaged(page, size, keyword);
     }
 
     /**
@@ -34,8 +42,9 @@ public class EmployeeController {
      * 직원 등록
      */
     @PostMapping
-    public void create(@RequestBody Employee employee) {
+    public ResponseEntity<Long> create(@RequestBody Employee employee) {
         service.create(employee);
+        return ResponseEntity.ok(employee.getEmpId()); // 생성된 PK 반환
     }
 
     /**

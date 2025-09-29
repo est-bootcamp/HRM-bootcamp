@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>User Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700">
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Page header -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 th:text="${user.usNo == null ? '사용자 등록' : '사용자 수정'}"></h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{/users}">Users</a></li>
+                            <li class="breadcrumb-item active" th:text="${user.usNo == null ? 'Create' : 'Edit'}"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title" th:text="${user.usNo == null ? '새 사용자 등록' : '사용자 수정'}"></h3>
+                </div>
+
+                <!-- form start -->
+                <form th:action="${user.usNo == null} ? @{/users} : @{|/users/${user.usNo}/edit|}" method="post">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="loginId">로그인 ID</label>
+                            <input type="text" class="form-control" id="loginId" name="loginId"
+                                   placeholder="로그인 ID 입력" th:value="${user.loginId}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">비밀번호</label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                   placeholder="비밀번호 입력" th:value="${user.password}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="usRole">사용자 권한</label>
+                            <select class="form-control" id="usRole" name="usRole">
+                                <option value="ADMIN" th:selected="${user.usRole == 'ADMIN'}">ADMIN</option>
+                                <option value="USER" th:selected="${user.usRole == 'USER'}">USER</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="useYn">사용 여부</label>
+                            <select class="form-control" id="useYn" name="useYn">
+                                <option value="Y" th:selected="${user.useYn == 'Y'}">Y</option>
+                                <option value="N" th:selected="${user.useYn == 'N'}">N</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="note">비고</label>
+                            <textarea class="form-control" id="note" name="note"
+                                      placeholder="비고 입력" rows="3"
+                                      th:text="${user.note}"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- footer buttons -->
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">저장</button>
+                        <a th:href="@{/users}" class="btn btn-secondary">취소</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.min.js}"></script>
+</body>
+</html>
