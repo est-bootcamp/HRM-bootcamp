@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>직원 등록/수정</title>
+    <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
+</head>
+<body>
+<div class="container mt-4">
+    <h2 th:text="${employee.empId == null ? '직원 등록' : '직원 수정'}"></h2>
+
+    <!-- 항상 /employees 로 전송, 컨트롤러에서 empId 유무로 분기 -->
+    <form th:action="@{/employees}" th:object="${employee}" method="post">
+        <!-- 수정 시 empId를 전달하기 위해 hidden 필드 추가 -->
+        <input type="hidden" th:field="*{empId}">
+
+        <div class="form-group">
+            <label>이름</label>
+            <input type="text" th:field="*{name}" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>이메일</label>
+            <input type="email" th:field="*{email}" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label>연락처</label>
+            <input type="text" th:field="*{phone}" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>상태</label>
+            <select th:field="*{status}" class="form-control">
+                <option value="재직">재직</option>
+                <option value="퇴사">퇴사</option>
+                <option value="휴직">휴직</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">저장</button>
+        <a th:href="@{/employees}" class="btn btn-secondary">목록</a>
+    </form>
+</div>
+</body>
+</html>

@@ -32,9 +32,13 @@ public class AuthController {
             var userDetails = (CustomUserDetails) auth.getPrincipal();
 
             // 3. JWT 발급
+            String role = (userDetails.getUserAccount().getUsRole() != null)
+                    ? userDetails.getUserAccount().getUsRole().toUpperCase()
+                    : "USER";
+
             String token = provider.createToken(
                     userDetails.getUsername(),
-                    Map.of("role", userDetails.getEmployee().getRole().name())
+                    Map.of("role", role)
             );
 
             return ResponseEntity.ok(Map.of("accessToken", token));

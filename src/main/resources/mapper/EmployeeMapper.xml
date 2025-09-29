@@ -27,31 +27,21 @@
         <result property="useYn" column="use_yn"/>
         <result property="note" column="note"/>
 
-        <!-- ✅ Role 매핑 -->
-        <result property="role" column="us_role" javaType="com.example.est_bootcamp.common.Role"/>
     </resultMap>
 
     <!-- 직원 단건 조회 -->
     <select id="findById" parameterType="long" resultMap="EmployeeMap">
-        SELECT e.*, u.us_role
-        FROM EMP e
-        LEFT JOIN US u ON e.us_no = u.us_no
-        WHERE e.emp_id = #{empId}
+        SELECT e.* FROM EMP e WHERE e.emp_id = #{empId}
     </select>
 
     <!-- 전체 조회 -->
     <select id="findAll" resultMap="EmployeeMap">
-        SELECT e.*, u.us_role
-        FROM EMP e
-        LEFT JOIN US u ON e.us_no = u.us_no
+        SELECT e.* FROM EMP e
     </select>
 
     <!-- 사용자 번호 기반 조회 -->
     <select id="findByUserNo" parameterType="long" resultMap="EmployeeMap">
-        SELECT e.*, u.us_role
-        FROM EMP e
-        LEFT JOIN US u ON e.us_no = u.us_no
-        WHERE e.us_no = #{usNo}
+        SELECT e.* FROM EMP e WHERE e.us_no = #{usNo}
     </select>
 
     <!-- 직원 등록 -->
@@ -63,34 +53,35 @@
         mod_ip, mod_date, mod_us_id, use_yn, note
         )
         VALUES (
-        #{usNo}, #{dprId}, #{pstId}, #{name}, #{email}, #{phone}, #{hireDate}, #{resignDate},
-        #{status}, #{address}, #{gender}, #{regIp}, #{regDate}, #{regUsId},
-        #{modIp}, #{modDate}, #{modUsId}, #{useYn}, #{note}
-        )
+        #{usNo}, #{dprId}, #{pstId}, #{name}, #{email}, #{phone},
+        #{hireDate}, #{resignDate}, #{status}, #{address}, #{gender},
+        #{regIp}, NOW(), #{regUsId},    <!-- ✅ 생성 시 현재시간 -->
+        #{modIp}, NOW(), #{modUsId},    <!-- ✅ 생성 시점에도 modDate는 NOW() -->
+        #{useYn}, #{note})
     </insert>
 
     <!-- 직원 수정 -->
     <update id="update" parameterType="com.example.est_bootcamp.emp.Employee">
         UPDATE EMP
-        SET us_no     = #{usNo},
-        dpr_id    = #{dprId},
-        pst_id    = #{pstId},
-        name      = #{name},
-        email     = #{email},
-        phone     = #{phone},
+        SET us_no = #{usNo},
+        dpr_id = #{dprId},
+        pst_id = #{pstId},
+        name = #{name},
+        email = #{email},
+        phone = #{phone},
         hire_date = #{hireDate},
         resign_date = #{resignDate},
-        status    = #{status},
-        address   = #{address},
-        gender    = #{gender},
-        reg_ip    = #{regIp},
-        reg_date  = #{regDate},
+        status = #{status},
+        address = #{address},
+        gender = #{gender},
+        reg_ip = #{regIp},
+        reg_date = #{regDate},
         reg_us_id = #{regUsId},
-        mod_ip    = #{modIp},
-        mod_date  = #{modDate},
+        mod_ip = #{modIp},
+        mod_date = NOW(),
         mod_us_id = #{modUsId},
-        use_yn    = #{useYn},
-        note      = #{note}
+        use_yn = #{useYn},
+        note = #{note}
         WHERE emp_id = #{empId}
     </update>
 

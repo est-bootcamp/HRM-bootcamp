@@ -27,4 +27,8 @@ public interface UserAccountMapper {
 
     // 삭제
     void delete(@Param("usNo") Long usNo);
+
+    // ✅ Employee 조인 포함 조회
+    Optional<UserAccount> findWithEmployeeByLoginId(@Param("loginId") String loginId);
+
 }

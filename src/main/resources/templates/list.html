@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>직원 목록</title>
+    <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>직원 목록</h2>
+    <a th:href="@{/employees/new}" class="btn btn-primary mb-3">직원 등록</a>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>부서</th>
+            <th>직급</th>
+            <th>상태</th>
+            <th>액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="emp : ${employees}">
+            <td th:text="${emp.empId}"></td>
+            <td th:text="${emp.name}"></td>
+            <td th:text="${emp.email}"></td>
+            <td th:text="${emp.dprId}"></td>
+            <td th:text="${emp.pstId}"></td>
+            <td th:text="${emp.status}"></td>
+            <td>
+                <a th:href="@{'/employees/' + ${emp.empId} + '/edit'}" class="btn btn-sm btn-warning">수정</a>
+                <a th:href="@{'/employees/' + ${emp.empId} + '/delete'}"
+                   class="btn btn-sm btn-danger"
+                   onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

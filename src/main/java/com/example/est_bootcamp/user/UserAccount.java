@@ -1,5 +1,6 @@
 package com.example.est_bootcamp.user;
 
+import com.example.est_bootcamp.emp.Employee;
 import lombok.*;
 
 @Getter
@@ -21,6 +22,7 @@ public class UserAccount {
     private String useYn;     // 사용여부 (Y/N)
     private String note;      // 비고
     private String usRole;    // 사용자 권한
+    private Employee employee;
 
     // ✅ UserDetails isEnabled() 대응
     public boolean isEnabled() {

@@ -1,9 +1,9 @@
 package com.example.est_bootcamp.emp;
 
-import com.example.est_bootcamp.common.Role;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -28,15 +28,14 @@ public class Employee {
     private String gender;   // 성별 (M/F)
 
     private String regIp;    // 최초 등록 아이피
-    private LocalDate regDate;   // 생성일시
+    private LocalDateTime regDate;   // 생성일시
     private Long regUsId;    // 최초 등록 사용자
 
     private String modIp;    // 수정 시 등록 아이피
-    private LocalDate modDate;   // 최종 수정일시
+    private LocalDateTime modDate;   // 최종 수정일시
     private Long modUsId;    // 최종 수정 사용자
 
     private String useYn;    // Y/N
     private String note;     // 비고
 
-    private Role role;
 }

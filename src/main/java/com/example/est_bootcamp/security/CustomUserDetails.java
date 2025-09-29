@@ -22,10 +22,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (employee != null && employee.getRole() != null) {
-            return List.of((GrantedAuthority) () -> "ROLE_" + employee.getRole().name());
-        }
-        return List.of((GrantedAuthority) () -> "ROLE_USER"); // 기본 권한
+        // ✅ UserAccount.usRole을 기반으로 권한 부여
+        String role = (userAccount.getUsRole() != null)
+                ? userAccount.getUsRole().toUpperCase()
+                : "USER";
+        return List.of((GrantedAuthority) () -> "ROLE_" + role);
     }
 
     @Override

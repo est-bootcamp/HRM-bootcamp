@@ -1,7 +1,5 @@
 package com.example.est_bootcamp.service;
 
-import com.example.est_bootcamp.common.Role;
-import com.example.est_bootcamp.emp.Employee;
 import com.example.est_bootcamp.leave.LeaveRequest;
 import com.example.est_bootcamp.leave.LeaveStatus;
 import com.example.est_bootcamp.repo.LeaveRequestMapper;
@@ -14,53 +12,60 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class LeaveService {
-    private final LeaveRequestMapper mapper;
 
-    public LeaveRequest submit(Employee requester, Long leaveTypeCode, Employee approver,
-                               LocalDate start, LocalDate end) {
-        if (end.isBefore(start)) throw new IllegalArgumentException("end before start");
+    private final LeaveRequestMapper leaveRequestMapper;
 
-        if (requester.getRole() == Role.PARTNER || requester.getRole() == Role.OWNER) {
-            if (!(approver.getRole() == Role.OWNER)) {
-                throw new IllegalStateException("Partner/Owner leave requires OWNER approval");
-            }
-        } else {
-            if (!(approver.getRole() == Role.ADMIN)) {
-                throw new IllegalStateException("Staff leave requires ADMIN approval");
-            }
-        }
+    /**
+     * 휴가 신청
+     */
+    public LeaveRequest submit(Long requesterId,
+                               Long leaveTypeCode,
+                               Long approverId,
+                               LocalDate startDate,
+                               LocalDate endDate) {
 
-        LeaveRequest lv = LeaveRequest.builder()
-                .rqsEmpId(requester.getEmpId())   // 신청자 ID
-                .appEmpId(approver.getEmpId())    // 승인자 ID
-                .leaveTypeCode(leaveTypeCode)
-                .startDate(start)
-                .endDate(end)
-                .status(LeaveStatus.REQUESTED)
+        LeaveRequest request = LeaveRequest.builder()
+                .rqsEmpId(requesterId)       // 신청자 ID
+                .leaveTypeCode(leaveTypeCode) // 휴가 유형 코드
+                .appEmpId(approverId)         // 승인자 ID
+                .startDate(startDate)
+                .endDate(endDate)
+                .status(LeaveStatus.PENDING)  // 처음엔 대기 상태
                 .requestDate(LocalDateTime.now())
+                .useYn("Y")
                 .build();
 
-        mapper.insert(lv);
-        return lv;
+        leaveRequestMapper.insert(request); // MyBatis insert 호출
+        return request; // insert 후 그대로 반환
     }
 
-    public LeaveRequest approve(Long leaveId, Employee approver) {
-        LeaveRequest lv = mapper.findById(leaveId).orElseThrow();
-        if (!lv.getAppEmpId().equals(approver.getEmpId())) {
-            throw new SecurityException("Not the designated approver");
-        }
-        lv.setStatus(LeaveStatus.APPROVED);
-        mapper.update(lv);
-        return lv;
+    /**
+     * 휴가 승인
+     */
+    public LeaveRequest approve(Long leaveId, Long approverId) {
+        LeaveRequest request = leaveRequestMapper.findById(leaveId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 휴가 신청: " + leaveId));
+
+        request.setAppEmpId(approverId);
+        request.setStatus(LeaveStatus.APPROVED);
+        request.setModDate(LocalDateTime.now());
+
+        leaveRequestMapper.update(request);
+        return request;
     }
 
-    public LeaveRequest reject(Long leaveId, Employee approver) {
-        LeaveRequest lv = mapper.findById(leaveId).orElseThrow();
-        if (!lv.getAppEmpId().equals(approver.getEmpId())) {
-            throw new SecurityException("Not the designated approver");
-        }
-        lv.setStatus(LeaveStatus.REJECTED);
-        mapper.update(lv);
-        return lv;
+    /**
+     * 휴가 반려
+     */
+    public LeaveRequest reject(Long leaveId, Long approverId) {
+        LeaveRequest request = leaveRequestMapper.findById(leaveId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 휴가 신청: " + leaveId));
+
+        request.setAppEmpId(approverId);
+        request.setStatus(LeaveStatus.REJECTED);
+        request.setModDate(LocalDateTime.now());
+
+        leaveRequestMapper.update(request);
+        return request;
     }
 }

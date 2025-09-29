@@ -3,6 +3,7 @@ package com.example.est_bootcamp.api;
 import com.example.est_bootcamp.emp.Employee;
 import com.example.est_bootcamp.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +35,9 @@ public class EmployeeController {
      * 직원 등록
      */
     @PostMapping
-    public void create(@RequestBody Employee employee) {
+    public ResponseEntity<Long> create(@RequestBody Employee employee) {
         service.create(employee);
+        return ResponseEntity.ok(employee.getEmpId()); // 생성된 PK 반환
     }
 
     /**
