@@ -4,6 +4,7 @@ import com.example.est_bootcamp.emp.Employee;
 import com.example.est_bootcamp.service.EmployeeService;
 import com.example.est_bootcamp.service.DepartmentService;
 import com.example.est_bootcamp.service.PositionService;
+import com.example.est_bootcamp.service.PageResponse; // ✅ PageResponse import
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,20 @@ public class EmployeePageController {
     private final DepartmentService deptService;
     private final PositionService positionService;
 
-    /** 직원 목록 화면 */
+    /** ✅ 직원 목록 (페이지네이션 + 검색) */
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("employees", service.getAll());
+    public String list(@RequestParam(defaultValue = "1") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       @RequestParam(defaultValue = "") String keyword,
+                       Model model) {
+
+        // 서비스에서 페이징 처리된 결과 가져오기
+        PageResponse<Employee> employeePage = service.getAllPaged(page, size, keyword);
+
+        // 모델에 담기
+        model.addAttribute("employeePage", employeePage);
+        model.addAttribute("keyword", keyword);
+
         return "list";
     }
 

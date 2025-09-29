@@ -26,7 +26,6 @@
         <result property="modUsId" column="mod_us_id"/>
         <result property="useYn" column="use_yn"/>
         <result property="note" column="note"/>
-
     </resultMap>
 
     <!-- 직원 단건 조회 -->
@@ -37,6 +36,34 @@
     <!-- 전체 조회 -->
     <select id="findAll" resultMap="EmployeeMap">
         SELECT e.* FROM EMP e
+    </select>
+
+    <!-- 🔽 검색 + 페이징 조회 -->
+    <select id="findAllPaged" resultMap="EmployeeMap">
+        SELECT e.*
+        FROM EMP e
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (e.name LIKE CONCAT('%', #{keyword}, '%')
+                OR e.email LIKE CONCAT('%', #{keyword}, '%')
+                OR e.phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY e.emp_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 🔽 검색 포함 총 건수 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM EMP e
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (e.name LIKE CONCAT('%', #{keyword}, '%')
+                OR e.email LIKE CONCAT('%', #{keyword}, '%')
+                OR e.phone LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
     </select>
 
     <!-- 사용자 번호 기반 조회 -->
@@ -55,8 +82,8 @@
         VALUES (
         #{usNo}, #{dprId}, #{pstId}, #{name}, #{email}, #{phone},
         #{hireDate}, #{resignDate}, #{status}, #{address}, #{gender},
-        #{regIp}, NOW(), #{regUsId},    <!-- ✅ 생성 시 현재시간 -->
-        #{modIp}, NOW(), #{modUsId},    <!-- ✅ 생성 시점에도 modDate는 NOW() -->
+        #{regIp}, NOW(), #{regUsId},
+        #{modIp}, NOW(), #{modUsId},
         #{useYn}, #{note})
     </insert>
 
