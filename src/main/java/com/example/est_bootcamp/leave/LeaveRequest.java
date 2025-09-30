@@ -37,4 +37,11 @@ public class LeaveRequest {
 
     private String useYn;       // 사용 여부 (Y/N)
     private String note;        // 비고
+
+    // 2025-09-30 박상현 추가
+    private String rqsName;       //
+    private String appName;       //
+
 }
+
+

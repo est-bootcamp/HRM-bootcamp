@@ -5,6 +5,8 @@ import com.example.est_bootcamp.leave.LeaveStatus;
 import com.example.est_bootcamp.repo.LeaveRequestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.List; // List 추가
+import com.example.est_bootcamp.repo.LeaveRequestMapper; // LeaveRequestMapper 추가
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,11 +20,21 @@ public class LeaveService {
     /**
      * 휴가 신청
      */
+    // LeaveService.java
+    public List<LeaveRequest> getAllLeaveRequests() {
+        return leaveRequestMapper.findAll();
+    }
+
+
+
+
     public LeaveRequest submit(Long requesterId,
                                Long leaveTypeCode,
                                Long approverId,
                                LocalDate startDate,
-                               LocalDate endDate) {
+                               LocalDate endDate
+
+    ) {
 
         LeaveRequest request = LeaveRequest.builder()
                 .rqsEmpId(requesterId)       // 신청자 ID
@@ -30,8 +42,8 @@ public class LeaveService {
                 .appEmpId(approverId)         // 승인자 ID
                 .startDate(startDate)
                 .endDate(endDate)
-                .status(LeaveStatus.PENDING)  // 처음엔 대기 상태
-                .requestDate(LocalDateTime.now())
+                .status(LeaveStatus.REQUESTED)  // 자동으로 REQUESTED
+                .requestDate(LocalDateTime.now()) // 현재 시간
                 .useYn("Y")
                 .build();
 
@@ -67,5 +79,46 @@ public class LeaveService {
 
         leaveRequestMapper.update(request);
         return request;
+    }
+    /**
+     * 단건 조회
+     */
+    public LeaveRequest getById(Long id) {
+        return leaveRequestMapper.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 휴가 신청: " + id));
+    }
+
+    /**
+     * 수정
+     */
+    public void update(LeaveRequest leaveRequest) {
+        leaveRequest.setModDate(LocalDateTime.now());
+        leaveRequestMapper.update(leaveRequest);
+    }
+
+    /**
+     * 삭제
+     */
+    public void delete(Long id) {
+        leaveRequestMapper.delete(id);
+    }
+
+
+    public void updateLeave(Long id, Long rqsEmpId, Long leaveTypeCode,
+                            LocalDate startDate, LocalDate endDate) {
+
+        // 기존 데이터 조회
+        LeaveRequest existing = leaveRequestMapper.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 휴가 신청: " + id));
+
+        // 수정 가능한 항목만 변경
+        existing.setRqsEmpId(rqsEmpId);
+        existing.setLeaveTypeCode(leaveTypeCode);
+        existing.setStartDate(startDate);
+        existing.setEndDate(endDate);
+        existing.setModDate(LocalDateTime.now()); // 수정일 갱신
+
+        leaveRequestMapper.update(existing);
+
     }
 }

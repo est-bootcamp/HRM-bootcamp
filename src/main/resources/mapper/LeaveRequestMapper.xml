@@ -7,9 +7,11 @@
 
     <resultMap id="LeaveRequestMap" type="com.example.est_bootcamp.leave.LeaveRequest">
         <id property="lvId" column="lv_id"/>
-        <result property="lvTy" column="lv_ty"/>
+        <result property="leaveTypeCode" column="lv_ty"/>
         <result property="appEmpId" column="app_emp_id"/>
+        <result property="appName" column="app_name"/>
         <result property="rqsEmpId" column="rqs_emp_id"/>
+        <result property="rqsName" column="rqs_name"/>
         <result property="startDate" column="start_date"/>
         <result property="endDate" column="end_date"/>
         <result property="status" column="status"/>
@@ -24,6 +26,8 @@
         <result property="note" column="note"/>
     </resultMap>
 
+
+
     <!-- 단건 조회 -->
     <select id="findById" parameterType="long" resultMap="LeaveRequestMap">
         SELECT * FROM LV_RQ WHERE lv_id = #{lvId}
@@ -31,36 +35,63 @@
 
     <!-- 전체 조회 -->
     <select id="findAll" resultMap="LeaveRequestMap">
-        SELECT * FROM LV_RQ
+        SELECT
+
+            lv_id
+             , rqs_emp_id
+             , (select name from EMP as rEmp where rEmp.emp_id = LV_RQ.rqs_emp_id ) as rqs_name
+             , app_emp_id
+             , (select name from EMP as aEmp where aEmp.emp_id = LV_RQ.app_emp_id ) as app_name
+             , start_date
+             , end_date
+             , status
+             , request_date
+             , lv_ty
+             , reg_ip
+             , reg_date
+             , reg_us_id
+             , mod_ip
+             , mod_date
+             , mod_us_id
+             , use_yn
+             , note
+
+        FROM LV_RQ
+
     </select>
 
     <!-- 등록 -->
-    <insert id="insert" parameterType="com.example.est_bootcamp.leave.LeaveRequest">
+    <insert id="insert" parameterType="com.example.est_bootcamp.leave.LeaveRequest"
+            useGeneratedKeys="true" keyProperty="lvId">
         INSERT INTO LV_RQ (
-        lv_id, lv_ty, app_emp_id, rqs_emp_id,
-        start_date, end_date, status, request_date,
-        reg_ip, reg_date, reg_us_id, mod_ip, mod_date, mod_us_id,
-        use_yn, note
+            lv_ty, app_emp_id, rqs_emp_id,
+            start_date, end_date, status, request_date,
+            reg_ip, reg_date, reg_us_id, mod_ip, mod_date, mod_us_id,
+            use_yn, note
         ) VALUES (
-        #{lvId}, #{lvTy}, #{appEmpId}, #{rqsEmpId},
-        #{startDate}, #{endDate}, #{status}, #{requestDate},
-        #{regIp}, #{regDate}, #{regUsId}, #{modIp}, #{modDate}, #{modUsId},
-        #{useYn}, #{note}
-        )
+                     #{leaveTypeCode}, #{appEmpId}, #{rqsEmpId},
+                     #{startDate}, #{endDate}, #{status}, #{requestDate},
+                     #{regIp}, #{regDate}, #{regUsId}, #{modIp}, #{modDate}, #{modUsId},
+                     #{useYn}, #{note}
+                 )
     </insert>
 
     <!-- 수정 -->
     <update id="update" parameterType="com.example.est_bootcamp.leave.LeaveRequest">
         UPDATE LV_RQ
-        SET lv_ty = #{lvTy},
-        app_emp_id = #{appEmpId},
-        rqs_emp_id = #{rqsEmpId},
-        start_date = #{startDate},
-        end_date = #{endDate},
-        status = #{status},
-        request_date = #{requestDate},
-        reg_ip = #{regIp},
-        reg_d_
+        SET lv_ty = #{leaveTypeCode},
+            app_emp_id = #{appEmpId},
+            rqs_emp_id = #{rqsEmpId},
+            start_date = #{startDate},
+            end_date = #{endDate},
+            status = #{status},
+            request_date = #{requestDate},
+            mod_ip = #{modIp},
+            mod_date = #{modDate},
+            mod_us_id = #{modUsId},
+            use_yn = #{useYn},
+            note = #{note}
+        WHERE lv_id = #{lvId}
     </update>
 
     <delete id="delete" parameterType="long">
