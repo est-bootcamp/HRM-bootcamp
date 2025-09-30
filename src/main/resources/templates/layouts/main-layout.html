@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$[${title}]">My AdminLTE App</title>
+
+    <link th:href="@{/plugins/fontawesome-free/css/all.min.css}" rel="stylesheet">
+    <link th:href="@{/dist/css/adminlte.min.css}" rel="stylesheet">
+    <th:block layout:fragment="css"></th:block>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <header th:replace="fragments/header :: header"></header>
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <div class="content-wrapper">
+        <section class="content">
+            <div layout:fragment="content"></div>
+        </section>
+    </div>
+    <footer th:replace="fragments/footer :: footer"></footer>
+</div>
+
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.min.js}"></script>
+<th:block layout:fragment="js"></th:block>
+</body>
+</html>
