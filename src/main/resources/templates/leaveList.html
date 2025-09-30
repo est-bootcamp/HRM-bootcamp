@@ -16,14 +16,6 @@
 
     <h1>휴가 신청 목록</h1>
 
-<!--    &lt;!&ndash; 검색 폼 &ndash;&gt;
-    <form th:action="@{/leave}" method="get" class="d-flex mb-3">
-        <input type="text" name="keyword" th:value="${keyword}"
-               placeholder="신청자/승인자 검색"
-               class="form-control me-2 w-25">
-        <button type="submit" class="btn btn-primary">검색</button>
-    </form>-->
-
     <a th:href="@{/leave/new}" class="btn btn-success mb-3">휴가 등록</a>
     <!-- 휴가 신청 테이블 -->
     <table class="table table-bordered table-hover">
@@ -56,9 +48,6 @@
                    class="btn btn-sm btn-danger"
                    onclick="return confirm('삭제하시겠습니까?');">삭제</a>
             </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(leaveRequests)}">
-            <td colspan="9" class="text-center">검색 결과가 없습니다.</td>
         </tr>
         </tbody>
     </table>
