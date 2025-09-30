@@ -101,7 +101,10 @@ class EmployeeMapperTest {
     @Order(4)
     @DisplayName("4. 직원 삭제 (Delete)")
     void testDeleteEmployee() {
-        employeeMapper.delete(savedEmpId);
+        Employee emp = new Employee();
+        emp.setEmpId(savedEmpId);
+
+        employeeMapper.delete(emp);
 
         Optional<Employee> empOpt = employeeMapper.findById(savedEmpId);
         assertThat(empOpt).isEmpty();
