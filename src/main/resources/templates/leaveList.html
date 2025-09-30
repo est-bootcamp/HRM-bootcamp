@@ -16,13 +16,13 @@
 
     <h1>휴가 신청 목록</h1>
 
-    <!-- 검색 폼 -->
+<!--    &lt;!&ndash; 검색 폼 &ndash;&gt;
     <form th:action="@{/leave}" method="get" class="d-flex mb-3">
         <input type="text" name="keyword" th:value="${keyword}"
                placeholder="신청자/승인자 검색"
                class="form-control me-2 w-25">
         <button type="submit" class="btn btn-primary">검색</button>
-    </form>
+    </form>-->
 
     <a th:href="@{/leave/new}" class="btn btn-success mb-3">휴가 등록</a>
     <!-- 휴가 신청 테이블 -->
@@ -32,7 +32,7 @@
             <th>신청 ID</th>
             <th>신청자 성명</th>
             <th>승인자 성명</th>
-            <th>휴가 유형 코드</th>
+            <th>휴가 유형</th>
             <th>상태</th>
             <th>시작일</th>
             <th>종료일</th>
@@ -45,7 +45,7 @@
             <td th:text="${leave.lvId}"></td>
             <td th:text="${leave.rqsName}"></td>
             <td th:text="${leave.appName}"></td>
-            <td th:text="${leave.leaveTypeCode}"></td>
+            <td th:text="${leave.leaveTypeName}"></td>
             <td th:text="${leave.status}"></td>
             <td th:text="${#temporals.format(leave.startDate, 'yyyy-MM-dd')}"></td>
             <td th:text="${#temporals.format(leave.endDate, 'yyyy-MM-dd')}"></td>

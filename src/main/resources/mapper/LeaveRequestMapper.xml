@@ -8,6 +8,7 @@
     <resultMap id="LeaveRequestMap" type="com.example.est_bootcamp.leave.LeaveRequest">
         <id property="lvId" column="lv_id"/>
         <result property="leaveTypeCode" column="lv_ty"/>
+        <result property="leaveTypeName" column="leave_type_name"/>
         <result property="appEmpId" column="app_emp_id"/>
         <result property="appName" column="app_name"/>
         <result property="rqsEmpId" column="rqs_emp_id"/>
@@ -47,6 +48,7 @@
              , status
              , request_date
              , lv_ty
+             , (SELECT lv_ty_de FROM LV_RQ_CD WHERE lv_ty = LV_RQ.lv_ty) AS leave_type_name
              , reg_ip
              , reg_date
              , reg_us_id
@@ -55,19 +57,29 @@
              , mod_us_id
              , use_yn
              , note
-
         FROM LV_RQ
-
+        WHERE use_yn = 'Y'
     </select>
 
     <!-- 등록 -->
     <insert id="insert" parameterType="com.example.est_bootcamp.leave.LeaveRequest"
             useGeneratedKeys="true" keyProperty="lvId">
         INSERT INTO LV_RQ (
-            lv_ty, app_emp_id, rqs_emp_id,
-            start_date, end_date, status, request_date,
-            reg_ip, reg_date, reg_us_id, mod_ip, mod_date, mod_us_id,
-            use_yn, note
+            lv_ty
+             , app_emp_id
+             , rqs_emp_id
+             , start_date
+             , end_date
+             , status
+             , request_date
+             , reg_ip
+             , reg_date
+             , reg_us_id
+             , mod_ip
+             , mod_date
+             , mod_us_id
+             , use_yn
+             , note
         ) VALUES (
                      #{leaveTypeCode}, #{appEmpId}, #{rqsEmpId},
                      #{startDate}, #{endDate}, #{status}, #{requestDate},
@@ -93,9 +105,12 @@
             note = #{note}
         WHERE lv_id = #{lvId}
     </update>
-
-    <delete id="delete" parameterType="long">
-        DELETE FROM LV_RQ WHERE lv_id = #{lvId}
-    </delete>
+    <!-- 논리 삭제 -->
+    <update id="delete" parameterType="long">
+        UPDATE LV_RQ
+        SET use_yn = 'N',
+            mod_date = NOW()
+        WHERE lv_id = #{lvId}
+    </update>
 
 </mapper>

@@ -15,6 +15,7 @@ public class LeaveRequest {
 
     private Long lvId;              // 휴가신청아이디
     private Long leaveTypeCode;     // 휴가유형 (lv_ty)
+    private String leaveTypeName;   // 휴가유형 설명(lv_ty_de)
 
     private Long appEmpId;          // 승인자아이디
     private Long rqsEmpId;          // 신청자아이디
@@ -38,7 +39,6 @@ public class LeaveRequest {
     private String useYn;       // 사용 여부 (Y/N)
     private String note;        // 비고
 
-    // 2025-09-30 박상현 추가
     private String rqsName;       //
     private String appName;       //
 

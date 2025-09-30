@@ -6,7 +6,6 @@ import com.example.est_bootcamp.repo.LeaveRequestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List; // List 추가
-import com.example.est_bootcamp.repo.LeaveRequestMapper; // LeaveRequestMapper 추가
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,17 +16,15 @@ public class LeaveService {
 
     private final LeaveRequestMapper leaveRequestMapper;
 
-    /**
-     * 휴가 신청
-     */
-    // LeaveService.java
+
+    //전체 조회 (목록 화면)
     public List<LeaveRequest> getAllLeaveRequests() {
         return leaveRequestMapper.findAll();
     }
 
 
 
-
+    //등록 (휴가 등록)
     public LeaveRequest submit(Long requesterId,
                                Long leaveTypeCode,
                                Long approverId,
@@ -51,59 +48,18 @@ public class LeaveService {
         return request; // insert 후 그대로 반환
     }
 
-    /**
-     * 휴가 승인
-     */
-    public LeaveRequest approve(Long leaveId, Long approverId) {
-        LeaveRequest request = leaveRequestMapper.findById(leaveId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 휴가 신청: " + leaveId));
-
-        request.setAppEmpId(approverId);
-        request.setStatus(LeaveStatus.APPROVED);
-        request.setModDate(LocalDateTime.now());
-
-        leaveRequestMapper.update(request);
-        return request;
-    }
-
-    /**
-     * 휴가 반려
-     */
-    public LeaveRequest reject(Long leaveId, Long approverId) {
-        LeaveRequest request = leaveRequestMapper.findById(leaveId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 휴가 신청: " + leaveId));
-
-        request.setAppEmpId(approverId);
-        request.setStatus(LeaveStatus.REJECTED);
-        request.setModDate(LocalDateTime.now());
-
-        leaveRequestMapper.update(request);
-        return request;
-    }
-    /**
-     * 단건 조회
-     */
+    //단건 조회 (수정 화면에 기존 데이터 표시용)
     public LeaveRequest getById(Long id) {
         return leaveRequestMapper.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 휴가 신청: " + id));
     }
 
-    /**
-     * 수정
-     */
-    public void update(LeaveRequest leaveRequest) {
-        leaveRequest.setModDate(LocalDateTime.now());
-        leaveRequestMapper.update(leaveRequest);
-    }
-
-    /**
-     * 삭제
-     */
+    //논리 삭제 (삭제 버튼, use_yn을 'N'으로 변경)
     public void delete(Long id) {
         leaveRequestMapper.delete(id);
     }
 
-
+    //수정 (수정 버튼)
     public void updateLeave(Long id, Long rqsEmpId, Long leaveTypeCode,
                             LocalDate startDate, LocalDate endDate) {
 

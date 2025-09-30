@@ -1,11 +1,7 @@
 package com.example.est_bootcamp.api;
 
-import com.example.est_bootcamp.emp.Employee;
 import com.example.est_bootcamp.leave.LeaveRequest;
-import com.example.est_bootcamp.service.EmployeeService;
 import com.example.est_bootcamp.service.LeaveService;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -22,10 +18,8 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class LeaveController {
     private final LeaveService leaveService;
-    private final EmployeeService employeeService;
 
-
-    // LeaveController.java
+    //목록 조회
     @GetMapping
     public String viewLeaves(Model model) {
         List<LeaveRequest> leaveRequests = leaveService.getAllLeaveRequests();
@@ -53,45 +47,8 @@ public class LeaveController {
         return "redirect:/leave"; // 등록 후 목록으로 이동
     }
 
-    /* *//**
-     * 휴가 신청
-     *//*
-    @PostMapping("/submit")
-    public LeaveRequest submit(@RequestBody SubmitReq req) {
-        Employee requester = employeeService.getById(req.requesterId); // ✅ 수정
-        Employee approver = employeeService.getById(req.approverId);   // ✅ 수정
 
-        return leaveService.submit(
-                requester.getEmpId(),
-                req.leaveTypeCode,
-                approver.getEmpId(),
-                req.startDate,
-                req.endDate
-        );
-    }*/
-
-    /**
-     * 휴가 승인
-     */
-    @PostMapping("/{id}/approve")
-    public LeaveRequest approve(@PathVariable Long id, @RequestParam Long approverId) {
-        Employee approver = employeeService.getById(approverId); // ✅ 수정
-        return leaveService.approve(id, approver.getEmpId());
-    }
-
-    /**
-     * 휴가 반려
-     */
-    @PostMapping("/{id}/reject")
-    public LeaveRequest reject(@PathVariable Long id, @RequestParam Long approverId) {
-        Employee approver = employeeService.getById(approverId); // ✅ 수정
-        return leaveService.reject(id, approver.getEmpId());
-    }
-
-
-// LeaveController.java
-
-    // 수정 페이지 이동 (단건 조회)
+    // 수정 페이지 이동 (단건 조회 필요)
     @GetMapping("/{id}/edit")
     public String editLeave(@PathVariable Long id, Model model) {
         LeaveRequest leaveRequest = leaveService.getById(id);
@@ -119,25 +76,4 @@ public class LeaveController {
         return "redirect:/leave"; // 삭제 후 목록 페이지로 리다이렉트
     }
 
-
-
-
-
-
-    /**
-     * 요청 DTO
-     */
-    @Data
-    public static class SubmitReq {
-        @NotNull
-        Long requesterId;
-        @NotNull
-        Long approverId;
-        @NotNull
-        Long leaveTypeCode;
-        @NotNull
-        LocalDate startDate;
-        @NotNull
-        LocalDate endDate;
-    }
 }
