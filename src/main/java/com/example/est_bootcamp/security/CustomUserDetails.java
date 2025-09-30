@@ -58,4 +58,14 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return userAccount.isEnabled(); // enabled=true 여부
     }
+
+    // 로그인한 사용자의 PK를 반환 (UserAccount 기반)
+    public Long getUserId() {
+        return userAccount.getUserId();   // UserAccount 안에 usId가 있다고 가정
+    }
+
+    // 필요하다면 Employee 기반으로도 가져올 수 있음
+    public Long getEmpId() {
+        return (employee != null) ? employee.getEmpId() : null;
+    }
 }

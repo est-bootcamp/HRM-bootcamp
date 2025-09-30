@@ -26,35 +26,87 @@
         <result property="modUsId" column="mod_us_id"/>
         <result property="useYn" column="use_yn"/>
         <result property="note" column="note"/>
+        <result property="dprName" column="dprName"/>
+        <result property="pstName" column="pstName"/>
     </resultMap>
 
     <!-- 직원 단건 조회 -->
     <select id="findById" parameterType="long" resultMap="EmployeeMap">
-        SELECT e.* FROM EMP e WHERE e.emp_id = #{empId}
+        SELECT
+        e.emp_id,
+        e.us_no,
+        e.dpr_id,
+        e.pst_id,
+        e.name,
+        e.email,
+        e.phone,
+        e.hire_date,
+        e.resign_date,
+        e.status,
+        e.address,
+        e.gender,
+        e.reg_ip,
+        e.reg_date,
+        e.reg_us_id,
+        e.mod_ip,
+        e.mod_date,
+        e.mod_us_id,
+        e.use_yn,
+        e.note,
+        d.dpr_name AS dprName,
+        p.pst_name AS pstName
+        FROM EMP e
+        LEFT JOIN DPR d ON e.dpr_id = d.dpr_id
+        LEFT JOIN PST p ON e.pst_id = p.pst_id
+        WHERE e.emp_id = #{empId}
     </select>
 
     <!-- 전체 조회 -->
     <select id="findAll" resultMap="EmployeeMap">
-        SELECT e.* FROM EMP e
+        SELECT
+        e.emp_id,
+        e.us_no,
+        e.dpr_id,
+        e.pst_id,
+        e.name,
+        e.email,
+        e.phone,
+        e.hire_date,
+        e.resign_date,
+        e.status,
+        e.address,
+        e.gender,
+        e.reg_ip,
+        e.reg_date,
+        e.reg_us_id,
+        e.mod_ip,
+        e.mod_date,
+        e.mod_us_id,
+        e.use_yn,
+        e.note
+        FROM EMP e
+        WHERE e.use_yn = 'Y'
     </select>
 
-    <!-- 🔽 검색 + 페이징 조회 -->
+    <!-- 검색 + 페이징 조회 -->
     <select id="findAllPaged" resultMap="EmployeeMap">
-        SELECT e.emp_id,
+        SELECT
+        e.emp_id,
         e.name,
         e.email,
         e.phone,
         e.status,
         e.dpr_id,
         e.pst_id,
-        d.dpr_name AS dprName,   -- ✅ 부서명
-        p.pst_name AS pstName    -- ✅ 직급명
+        d.dpr_name AS dprName,
+        p.pst_name AS pstName
         FROM EMP e
         LEFT JOIN DPR d ON e.dpr_id = d.dpr_id
         LEFT JOIN PST p ON e.pst_id = p.pst_id
         <where>
+            e.use_yn = 'Y'
             <if test="keyword != null and keyword != ''">
-                (e.name LIKE CONCAT('%', #{keyword}, '%')
+                AND (e.name LIKE CONCAT('%', #{keyword}, '%')
                 OR e.email LIKE CONCAT('%', #{keyword}, '%')
                 OR e.phone LIKE CONCAT('%', #{keyword}, '%'))
             </if>
@@ -63,13 +115,14 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <!-- 🔽 검색 포함 총 건수 -->
+    <!-- 검색 포함 총 건수 -->
     <select id="count" resultType="int">
         SELECT COUNT(*)
         FROM EMP e
         <where>
+            e.use_yn = 'Y'
             <if test="keyword != null and keyword != ''">
-                (e.name LIKE CONCAT('%', #{keyword}, '%')
+                AND (e.name LIKE CONCAT('%', #{keyword}, '%')
                 OR e.email LIKE CONCAT('%', #{keyword}, '%')
                 OR e.phone LIKE CONCAT('%', #{keyword}, '%'))
             </if>
@@ -78,29 +131,64 @@
 
     <!-- 사용자 번호 기반 조회 -->
     <select id="findByUserNo" parameterType="long" resultMap="EmployeeMap">
-        SELECT e.* FROM EMP e WHERE e.us_no = #{usNo}
+        SELECT e.*
+        FROM EMP e
+        WHERE e.us_no = #{usNo}
+        AND e.use_yn = 'Y'
     </select>
 
     <!-- 직원 등록 -->
     <insert id="insert" parameterType="com.example.est_bootcamp.emp.Employee"
             useGeneratedKeys="true" keyProperty="empId">
         INSERT INTO EMP (
-        us_no, dpr_id, pst_id, name, email, phone, hire_date, resign_date,
-        status, address, gender, reg_ip, reg_date, reg_us_id,
-        mod_ip, mod_date, mod_us_id, use_yn, note
+        us_no,
+        dpr_id,
+        pst_id,
+        name,
+        email,
+        phone,
+        hire_date,
+        resign_date,
+        status,
+        address,
+        gender,
+        reg_ip,
+        reg_date,
+        reg_us_id,
+        mod_ip,
+        mod_date,
+        mod_us_id,
+        use_yn,
+        note
         )
         VALUES (
-        #{usNo}, #{dprId}, #{pstId}, #{name}, #{email}, #{phone},
-        #{hireDate}, #{resignDate}, #{status}, #{address}, #{gender},
-        #{regIp}, NOW(), #{regUsId},
-        #{modIp}, NOW(), #{modUsId},
-        #{useYn}, #{note})
+        #{usNo},
+        #{dprId},
+        #{pstId},
+        #{name},
+        #{email},
+        #{phone},
+        #{hireDate},
+        #{resignDate},
+        #{status},
+        #{address},
+        #{gender},
+        #{regIp},
+        NOW(),
+        #{regUsId},
+        #{modIp},
+        NOW(),
+        #{modUsId},
+        #{useYn},
+        #{note}
+        )
     </insert>
 
     <!-- 직원 수정 -->
     <update id="update" parameterType="com.example.est_bootcamp.emp.Employee">
         UPDATE EMP
-        SET us_no = #{usNo},
+        SET
+        <if test="usNo != null">us_no = #{usNo},</if>
         dpr_id = #{dprId},
         pst_id = #{pstId},
         name = #{name},
@@ -114,17 +202,22 @@
         reg_ip = #{regIp},
         reg_date = #{regDate},
         reg_us_id = #{regUsId},
+        use_yn = #{useYn},
+        note = #{note},
         mod_ip = #{modIp},
         mod_date = NOW(),
-        mod_us_id = #{modUsId},
-        use_yn = #{useYn},
-        note = #{note}
+        mod_us_id = #{modUsId}
         WHERE emp_id = #{empId}
     </update>
 
-    <!-- 직원 삭제 -->
-    <delete id="delete" parameterType="long">
-        DELETE FROM EMP WHERE emp_id = #{empId}
-    </delete>
+    <!-- 직원 삭제 (소프트 삭제) -->
+    <update id="delete" parameterType="com.example.est_bootcamp.emp.Employee">
+        UPDATE EMP
+        SET use_yn = 'N',
+        mod_date = NOW(),
+        mod_us_id = #{modUsId},
+        mod_ip = #{modIp}
+        WHERE emp_id = #{empId}
+    </update>
 
 </mapper>

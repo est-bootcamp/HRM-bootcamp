@@ -24,9 +24,13 @@ public class UserAccount {
     private String usRole;    // 사용자 권한
     private Employee employee;
 
-    // ✅ UserDetails isEnabled() 대응
+    //  UserDetails isEnabled() 대응
     public boolean isEnabled() {
         return "Y".equalsIgnoreCase(this.useYn);
     }
 
+    //  PK getter: 로그인 사용자의 고유 ID 반환
+    public Long getUserId() {
+        return this.usNo;
+    }
 }

@@ -28,14 +28,14 @@ public class EmployeeService {
         mapper.update(emp);
     }
 
-    public void delete(Long empId) {
-        mapper.delete(empId);
+    public void delete(Employee emp) {
+        mapper.delete(emp);
     }
 
     /**
-     * ✅ 검색 + 페이지네이션 지원 (1-based page index)
+     * 검색 + 페이지네이션 지원 (1-based page index)
      */
-    public PageResponse<Employee> getAllPaged(int page, int size, String keyword) {
+    public PageResponse<Employee> getEmpLstAllPaged(int page, int size, String keyword) {
         // 페이지는 1부터 시작 → offset은 (page - 1) * size
         int offset = (page - 1) * size;
 

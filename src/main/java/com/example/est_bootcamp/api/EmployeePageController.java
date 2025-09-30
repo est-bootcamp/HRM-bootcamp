@@ -1,12 +1,15 @@
 package com.example.est_bootcamp.api;
 
 import com.example.est_bootcamp.emp.Employee;
+import com.example.est_bootcamp.security.CustomUserDetails;
 import com.example.est_bootcamp.service.EmployeeService;
 import com.example.est_bootcamp.service.DepartmentService;
 import com.example.est_bootcamp.service.PositionService;
-import com.example.est_bootcamp.service.PageResponse; // ✅ PageResponse import
+import com.example.est_bootcamp.service.PageResponse; // PageResponse import
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +24,7 @@ public class EmployeePageController {
     private final DepartmentService deptService;
     private final PositionService positionService;
 
-    /** ✅ 직원 목록 (페이지네이션 + 검색) */
+    /** 직원 목록 (페이지네이션 + 검색) */
     @GetMapping
     public String list(@RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "10") int size,
@@ -29,7 +32,7 @@ public class EmployeePageController {
                        Model model) {
 
         // 서비스에서 페이징 처리된 결과 가져오기
-        PageResponse<Employee> employeePage = service.getAllPaged(page, size, keyword);
+        PageResponse<Employee> employeePage = service.getEmpLstAllPaged(page, size, keyword);
 
         // 모델에 담기
         model.addAttribute("employeePage", employeePage);
@@ -85,11 +88,23 @@ public class EmployeePageController {
     }
 
     /** 직원 삭제 */
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttrs) {
+    public String delete(@PathVariable Long id,
+                         HttpServletRequest request,
+                         Authentication authentication,
+                         RedirectAttributes redirectAttrs) {
         try {
-            service.delete(id);
+            // 로그인 사용자
+            CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+
+            // 삭제할 직원 객체 생성
+            Employee emp = new Employee();
+            emp.setEmpId(id);
+            emp.setModUsId(user.getUserId());      // 로그인한 사용자 ID
+            emp.setModIp(request.getRemoteAddr()); // 요청 IP
+
+            service.delete(emp);
         } catch (Exception e) {
             redirectAttrs.addFlashAttribute("errorMessage", "직원 삭제 중 오류가 발생했습니다.");
         }
