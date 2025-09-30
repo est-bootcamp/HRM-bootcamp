@@ -4,6 +4,7 @@
 
 <mapper namespace="com.example.est_bootcamp.repo.CaseMapper">
 
+<!-- ResultMap -> CS 테이블의 결과를 Case DTO로 매핑할 때 사용되는 맵핑 규칙-->
     <resultMap id="caseResultMap" type="com.example.est_bootcamp.dto.Case">
         <id property="csId" column="cs_id"/>
         <result property="csTyId" column="cs_ty_id"/>
@@ -20,40 +21,76 @@
         <result property="note" column="note"/>
     </resultMap>
 
-    <select id="findAll" resultMap="caseResultMap">
-        SELECT * FROM CS WHERE use_yn = 'Y' ORDER BY reg_date DESC
+    <!-- 단일 사건 조회-->
+    <select id="caseFindAll" resultMap="caseResultMap">
+        SELECT *
+        FROM CS WHERE 1=1
+         AND use_yn = 'Y'
+        <if test="id != null">
+         AND cs_id = #{id}
+        </if>
+        ORDER BY  reg_date DESC
     </select>
 
+<!-- 특정 cs_id에 해당하는 레코드 하나 조회, use_yn = 'Y'인것만 조회-->
     <select id="findById" parameterType="long" resultMap="caseResultMap">
-        SELECT * FROM CS WHERE cs_id = #{id} AND use_yn = 'Y'
+        SELECT *
+        FROM CS
+        WHERE cs_id = #{id} AND use_yn = 'Y'
     </select>
 
+<!-- 사건등록-->
     <insert id="insertCase" parameterType="com.example.est_bootcamp.dto.Case">
         INSERT INTO CS (
-            cs_id, cs_ty_id, cs_name, client_name, cs_status,
-            reg_ip, reg_date, reg_us_id, use_yn, note
+
+            cs_id,
+            cs_ty_id,
+            cs_name,
+            client_name,
+            cs_status,
+            reg_ip,
+            reg_date,
+            reg_us_id,
+            use_yn,
+            note
+
         ) VALUES (
-                     #{csId}, #{csTyId}, #{csName}, #{clientName}, #{csStatus},
-                     #{regIp}, #{regDate}, #{regUsId}, 'Y', #{note}
+             #{csId},
+             #{csTyId},
+             #{csName}, #{clientName}, #{csStatus},
+            #{regIp}, #{regDate}, #{regUsId}, 'Y', #{note}
                  )
     </insert>
 
+<!--   사건 수정, 동적으로 일부 필드만 업데이트 가능 -->
     <update id="updateCase" parameterType="com.example.est_bootcamp.dto.Case">
         UPDATE CS
-        SET cs_ty_id = #{csTyId},
+        SET
+          <if test="csTyId != null">
+              cs_ty_id = #{csTyId},
+          </if>
+        <if test="csName != null">
             cs_name = #{csName},
+        </if>
+
             client_name = #{clientName},
             cs_status = #{csStatus},
-            mod_ip = #{modIp},
-            mod_date = #{modDate},
-            mod_us_id = #{modUsId},
+
             use_yn = #{useYn},
-            note = #{note}
-        WHERE cs_id = #{csId}
+            note = #{note},
+
+             mod_ip = #{modIp},
+             mod_date = #{modDate},
+            mod_us_id = #{modUsId}
+
+        WHERE 1=1
+            and cs_id = #{csId}
     </update>
 
+<!-- 사건삭제, use_yn = 'N'으로 소프트 삭제 처리  -->
     <delete id="deleteCase" parameterType="long">
-        UPDATE CS SET use_yn = 'N' WHERE cs_id = #{id}
+
+            UPDATE CS SET use_yn = 'N' WHERE cs_id = #{id}
     </delete>
 
 </mapper>

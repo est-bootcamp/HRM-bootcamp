@@ -7,7 +7,13 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2 class="mb-4">사건 목록</h2>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>사건 목록</h2>
+        <a href="/cases/new" class="btn btn-success">+ 사건 등록</a>
+    </div>
+
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
 
     <table class="table table-bordered table-hover">
         <thead class="table-light">
@@ -24,7 +30,9 @@
         <tbody>
         <tr th:each="case : ${cases}">
             <td th:text="${case.csId}">1</td>
-            <td th:text="${case.csName}">사건명</td>
+            <td>
+                <a th:href="@{|/cases/${case.csId}|}" th:text="${case.csName}">사건명</a>
+            </td>
             <td th:text="${case.clientName}">고객명</td>
             <td th:text="${case.csTyId}">1</td>
             <td th:text="${case.csStatus}">진행중</td>

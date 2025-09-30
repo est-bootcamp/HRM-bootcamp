@@ -11,7 +11,7 @@ public interface CaseMapper {
     void insertCase(Case cs);
 
     // READ
-    List<Case> findAll();
+    List<Case> caseFindAll();
     Case findById(Long id);
 
     // UPDATE

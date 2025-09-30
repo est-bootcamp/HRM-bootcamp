@@ -14,7 +14,7 @@ public class CaseService {
     private CaseMapper caseMapper;
 
     public List<Case> getAllCases() {
-        return caseMapper.findAll();
+        return caseMapper.caseFindAll();
     }
 
     public Case getCaseById(Long csId) {
@@ -29,6 +29,7 @@ public class CaseService {
         caseMapper.updateCase(cs);
     }
 
+    //수정
     public void deleteCase(Long csId) {
         caseMapper.deleteCase(csId);
     }
