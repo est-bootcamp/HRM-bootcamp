@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>휴가 수정</title>
+    <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+
+    <div class="mb-3">
+        <a th:href="@{/main}" class="btn btn-outline-primary">🏠 홈</a>
+    </div>
+
+    <h2>휴가 수정</h2>
+
+    <form th:action="@{/leave/{id}/edit(id=${leaveRequest.lvId})}" method="post" class="mt-4">
+
+
+        <!-- 신청 ID (읽기 전용) -->
+        <div class="mb-3">
+            <label class="form-label">신청 ID</label>
+            <input type="text" th:value="${leaveRequest.lvId}" class="form-control" readonly>
+        </div>
+
+        <!-- 신청자 ID -->
+        <div class="mb-3">
+            <label class="form-label">신청자 ID</label>
+            <input type="number" name="rqsEmpId" th:value="${leaveRequest.rqsEmpId}" class="form-control" required>
+        </div>
+
+        <!-- 휴가 유형 코드 -->
+        <div class="mb-3">
+            <label class="form-label">휴가 유형 코드</label>
+            <select name="leaveTypeCode" class="form-select" required>
+                <option value="">-- 선택 --</option>
+                <option value="1" th:selected="${leaveRequest.leaveTypeCode == 1}">1. 연차</option>
+                <option value="2" th:selected="${leaveRequest.leaveTypeCode == 2}">2. 반차</option>
+                <option value="3" th:selected="${leaveRequest.leaveTypeCode == 3}">3. 병가</option>
+                <option value="4" th:selected="${leaveRequest.leaveTypeCode == 4}">4. 대체 휴가</option>
+                <option value="5" th:selected="${leaveRequest.leaveTypeCode == 5}">5. 돌봄휴가</option>
+                <option value="6" th:selected="${leaveRequest.leaveTypeCode == 6}">6. 출산휴가</option>
+            </select>
+        </div>
+
+        <!-- 시작일 -->
+        <div class="mb-3">
+            <label class="form-label">시작일</label>
+            <input type="date" name="startDate" th:value="${leaveRequest.startDate}" class="form-control" required>
+        </div>
+
+        <!-- 종료일 -->
+        <div class="mb-3">
+            <label class="form-label">종료일</label>
+            <input type="date" name="endDate" th:value="${leaveRequest.endDate}" class="form-control" required>
+        </div>
+
+        <!-- 버튼 -->
+        <button type="submit" class="btn btn-success">저장</button>
+        <a th:href="@{/leave}" class="btn btn-secondary">목록</a>
+    </form>
+
+
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.est_bootcamp.repo.LeaveTypeCodeMapper">
+
+    <resultMap id="LeaveTypeCodeMap" type="com.example.est_bootcamp.leave.LeaveTypeCode">
+        <id property="leaveType" column="lv_ty"/>
+        <result property="leaveTypeDes" column="lv_ty_de"/>
+        <result property="genRe" column="gen_re"/>
+        <result property="mxDpm" column="mx_dpm"/>
+        <result property="mxDpy" column="mx_dpy"/>
+        <result property="useYn" column="use_yn"/>
+    </resultMap>
+
+    <!-- 성별에 따른 휴가유형 조회 (수정됨) -->
+    <select id="findLeaveTypesByGender" parameterType="String" resultMap="LeaveTypeCodeMap">
+        SELECT * FROM LV_RQ_CD
+        WHERE use_yn = 'Y'
+          AND (gen_re = #{gender} OR gen_re IS NULL)
+    </select>
+
+    <!-- 전체 휴가유형 조회 -->
+    <select id="findAllLeaveTypes" resultMap="LeaveTypeCodeMap">
+        SELECT * FROM LV_RQ_CD WHERE use_yn = 'Y'
+    </select>
+
+    <!-- 특정 휴가유형 조회 -->
+    <select id="findById" parameterType="long" resultMap="LeaveTypeCodeMap">
+        SELECT * FROM LV_RQ_CD
+        WHERE lv_ty = #{lvTy} AND use_yn = 'Y'
+    </select>
+
+</mapper>
