@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 근태 현황</title>
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f6f9;
+        }
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <div class="content-wrapper">
+        <section class="content-header">
+
+            <!-- 홈 버튼 (메인으로 이동) -->
+            <div class="mb-3">
+                <a th:href="@{/main}" class="btn btn-outline-primary">🏠 홈</a>
+            </div>
+
+            <h1>👥 관리자 근태 현황</h1>
+            <small>전체 직원 근태 이력</small>
+        </section>
+
+        <section class="content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">전체 직원 근태 목록</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>직원 ID</th>
+                            <th>이름</th>
+                            <th>근무일자</th>
+                            <th>출근시간</th>
+                            <th>퇴근시간</th>
+                            <th>비고</th>
+                        </tr>
+                        </thead>
+                        <tbody id="attendanceList">
+                        <!-- Ajax로 데이터 로드 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    // ✅ 관리자 전체 근태 조회 API
+    async function loadAllAttendance() {
+        try {
+            const res = await axios.get("/api/attendance/all"); // 전체 조회 API
+            const list = res.data;
+            const tbody = document.getElementById("attendanceList");
+            tbody.innerHTML = "";
+            list.forEach(att => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${att.empId}</td>
+                        <td>${att.empName || '-'}</td>
+                        <td>${att.workDate}</td>
+                        <td>${att.checkIn ? att.checkIn.replace('T', ' ') : '-'}</td>
+                        <td>${att.checkOut ? att.checkOut.replace('T', ' ') : '-'}</td>
+                        <td>${att.note || '정상 출근'}</td>
+                    </tr>
+                `;
+            });
+        } catch (err) {
+            alert("데이터 로드 실패: " + err);
+        }
+    }
+
+    window.onload = loadAllAttendance;
+</script>
+</body>
+</html>

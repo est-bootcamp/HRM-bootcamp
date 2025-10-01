@@ -98,4 +98,26 @@ public class CustomUserDetails implements UserDetails {
     public Long getEmpId() {
         return (employee != null) ? employee.getEmpId() : null;
     }
+
+    /** 편의 메서드: 직원 이름 */
+    public String getEmpName() {
+        return (employee != null) ? employee.getName() : null;
+    }
+
+    /** 편의 메서드: 직원 이메일 */
+    public String getEmpEmail() {
+        return (employee != null) ? employee.getEmail() : null;
+    }
+
+    /** 편의 메서드: 권한 문자열만 바로 얻기 */
+    public String getRole() {
+        return (userAccount.getUsRole() != null)
+                ? userAccount.getUsRole().toUpperCase()
+                : "USER";
+    }
+
+    /** 관리자 여부 */
+    public boolean isAdmin() {
+        return "ADMIN".equalsIgnoreCase(userAccount.getUsRole());
+    }
 }

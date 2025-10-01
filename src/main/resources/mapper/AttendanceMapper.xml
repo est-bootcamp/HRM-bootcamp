@@ -14,38 +14,117 @@
         <result property="assignId" column="assign_id"/>
         <result property="useYn" column="use_yn"/>
         <result property="note" column="note"/>
+        <result property="regIp" column="reg_ip"/>
+        <result property="regDate" column="reg_date"/>
+        <result property="regUsId" column="reg_us_id"/>
+        <result property="modIp" column="mod_ip"/>
+        <result property="modDate" column="mod_date"/>
+        <result property="modUsId" column="mod_us_id"/>
+
+        <!-- 직원 이름 매핑 -->
+        <result property="empName" column="emp_name"/>
     </resultMap>
 
+    <!-- PK 조회 -->
     <select id="findById" parameterType="long" resultMap="AttendanceMap">
-        SELECT * FROM ATT WHERE att_id = #{attId}
+        SELECT A.*, E.name AS emp_name
+        FROM ATT A
+        JOIN EMP E ON A.emp_id = E.emp_id
+        WHERE A.att_id = #{attId}
     </select>
 
     <!-- 직원 ID와 날짜로 조회 -->
     <select id="findByEmpAndDate" resultMap="AttendanceMap">
-        SELECT * FROM ATT WHERE emp_id = #{empId} AND work_date = #{workDate}
+        SELECT A.*, E.name AS emp_name
+        FROM ATT A
+        JOIN EMP E ON A.emp_id = E.emp_id
+        WHERE A.emp_id = #{empId}
+        AND A.work_date = #{workDate}
     </select>
 
+    <!-- 직원 ID와 기간으로 조회 -->
+    <select id="findByRange" resultMap="AttendanceMap">
+        SELECT A.*, E.name AS emp_name
+        FROM ATT A
+        JOIN EMP E ON A.emp_id = E.emp_id
+        WHERE A.emp_id = #{empId}
+        AND A.work_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY A.work_date DESC, A.check_in ASC
+    </select>
+
+    <!-- 직원 전체 근태 조회 (관리자용) -->
+    <select id="findAllByEmp" resultMap="AttendanceMap">
+        SELECT A.*, E.name AS emp_name
+        FROM ATT A
+        JOIN EMP E ON A.emp_id = E.emp_id
+        WHERE A.emp_id = #{empId}
+        ORDER BY A.work_date DESC, A.check_in ASC
+    </select>
+
+    <!-- 특정 날짜의 전체 직원 근태 조회 (예: 오늘자 근태 현황판) -->
+    <select id="findAllByDate" resultMap="AttendanceMap">
+        SELECT A.*, E.name AS emp_name
+        FROM ATT A
+        JOIN EMP E ON A.emp_id = E.emp_id
+        WHERE A.work_date = #{workDate}
+        ORDER BY A.emp_id ASC
+    </select>
+
+    <!-- 모든 직원의 기간별 근태 조회 (관리자용) -->
+    <select id="findAllByRange" resultMap="AttendanceMap">
+        SELECT A.*, E.name AS emp_name
+        FROM ATT A
+        JOIN EMP E ON A.emp_id = E.emp_id
+        WHERE A.work_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY A.work_date DESC, A.emp_id ASC
+    </select>
+
+    <!-- Insert -->
     <insert id="insert" parameterType="com.example.est_bootcamp.att.Attendance"
             useGeneratedKeys="true" keyProperty="attId">
         INSERT INTO ATT (
-        emp_id, work_date, check_in, check_out, assign_id, use_yn, note
+        emp_id,
+        work_date,
+        check_in,
+        check_out,
+        assign_id,
+        use_yn,
+        note,
+        reg_ip,
+        reg_date,
+        reg_us_id
         ) VALUES (
-        #{empId}, #{workDate}, #{checkIn}, #{checkOut}, #{assignId}, #{useYn}, #{note}
+        #{empId},
+        #{workDate},
+        #{checkIn},
+        #{checkOut},
+        #{assignId},
+        #{useYn},
+        #{note},
+        #{regIp},
+        #{regDate},
+        #{regUsId}
         )
     </insert>
 
+    <!-- Update -->
     <update id="update" parameterType="com.example.est_bootcamp.att.Attendance">
         UPDATE ATT
         SET check_in = #{checkIn},
         check_out = #{checkOut},
         assign_id = #{assignId},
         use_yn = #{useYn},
-        note = #{note}
+        note = #{note},
+        mod_ip = #{modIp},
+        mod_date = #{modDate},
+        mod_us_id = #{modUsId}
         WHERE att_id = #{attId}
     </update>
 
+    <!-- Delete -->
     <delete id="delete" parameterType="long">
-        DELETE FROM ATT WHERE att_id = #{attId}
+        DELETE FROM ATT
+        WHERE att_id = #{attId}
     </delete>
 
 </mapper>

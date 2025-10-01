@@ -21,11 +21,13 @@ public class Attendance {
     private Long assignId;     // 사건배정아이디
 
     private String regIp;      // 최초등록아이피
-    private LocalDate regDate; // 생성일시
+    private LocalDateTime regDate; // 생성일시
     private Long regUsId;      // 최초등록사용자
     private String modIp;      // 수정시등록아이피
-    private LocalDate modDate; // 최종수정일시
+    private LocalDateTime modDate; // 최종수정일시
     private Long modUsId;      // 최종수정사용자
     private String useYn;      // Y/N
     private String note;       // 비고
+
+    private String empName; // 직원 이름 JOIN용
 }
