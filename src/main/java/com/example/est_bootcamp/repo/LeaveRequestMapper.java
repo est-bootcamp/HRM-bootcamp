@@ -20,14 +20,15 @@ public interface LeaveRequestMapper { //휴가 신청 데이터 접근 인터페
         // use_yn='Y'인 데이터만 조회 (논리적 삭제된 데이터 제외)
 
     void insert(LeaveRequest leave);
-        // 새로운 휴가 신청 등록
+        // (신청) 새로운 휴가 신청 등록
         // leaveForm.html에서 데이터 저장 시 사용
 
     void update(LeaveRequest leave);
-        // 휴가 신청 논리적 삭제
-        // 목록에서 삭제 버튼 클릭 시 사용
-        // use_yn='N'으로 UPDATE
+        // (수정) 기존 휴가 신청 정보 수정
+        // leaveEdit.html에서 수정된 데이터 저장 시 사용
 
     void delete(@Param("lvId") Long lvId);
-        // LeaveService 에서 delete 메서드 사용중
+        // (삭제) 휴가 신청 논리적 삭제
+        // 목록에서 삭제 버튼 클릭 시 사용
+        // 실제 DELETE가 아닌 use_yn='N'으로 UPDATE
 }

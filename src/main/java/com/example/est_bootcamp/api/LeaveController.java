@@ -41,7 +41,7 @@ public class LeaveController {
         return "leaveForm";
     }
 
-    // 휴가 등록 처리 (데이터 저장) - 서버 상태를 변경하는 작업이므로 POST 사용
+    // 휴가 등록 처리 (데이터 저장) - 서버에 새로운 데이터를 생성하기 때문에 POST 사용
     @PostMapping("/new")
     public String createLeave(@RequestParam Long rqsEmpId,      // 신청자 ID
                               @RequestParam Long leaveTypeCode, // 휴가 유형 번호
@@ -59,7 +59,7 @@ public class LeaveController {
     }
 
 
-    // 휴가 수정 폼 화면 표시 - 기존 데이터 조회해서 보여주는 것으로 GET 사용, 수정 버튼 시 호출
+    // 휴가 수정 폼 화면 표시 - 기존 데이터를 조회해서 보여주는 것으로 GET 사용, 수정 버튼 시 호출
     @GetMapping("/{id}/edit")
     public String editLeave(@PathVariable Long id, Model model) {
         // DB에서 특정 ID의 휴가 신청 데이터 1건 조회
