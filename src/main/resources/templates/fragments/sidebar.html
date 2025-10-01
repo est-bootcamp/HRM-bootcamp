@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="sidebar">
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- 브랜드 로고 -->
+        <a href="#" class="brand-link">
+            <span class="brand-text font-weight-light">AdminLTE</span>
+        </a>
+        <!-- 사이드바 메뉴 등 -->
+        <div class="sidebar">
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                    <li class="nav-item">
+                        <a th:href="@{/}" class="nav-link">
+                            <i class="nav-icon fas fa-home"></i>
+                            <p>홈</p>
+                        </a>
+                    </li>
+                    <!-- 메뉴 항목 추가 -->
+                </ul>
+            </nav>
+        </div>
+    </aside>
+</th:block>
+</html>
