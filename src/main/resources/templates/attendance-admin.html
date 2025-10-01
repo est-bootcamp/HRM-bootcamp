@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <title>관리자 근태 현황</title>
     <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- axios 추가 -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            text-align: center;
-            padding: 8px;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f4f6f9;
-        }
-        tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-    </style>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- DataTables Buttons JS -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -43,7 +43,24 @@
                     <h3 class="card-title">전체 직원 근태 목록</h3>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered">
+
+                    <!-- 날짜 필터 -->
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label>시작일</label>
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label>종료일</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button class="btn btn-primary" onclick="loadFiltered()">조회</button>
+                        </div>
+                    </div>
+
+                    <!-- 테이블 -->
+                    <table id="attendanceTable" class="table table-bordered table-striped">
                         <thead>
                         <tr>
                             <th>직원 ID</th>
@@ -55,7 +72,7 @@
                         </tr>
                         </thead>
                         <tbody id="attendanceList">
-                        <!-- Ajax로 데이터 로드 -->
+                        <!-- Ajax 로딩 -->
                         </tbody>
                     </table>
                 </div>
@@ -65,31 +82,105 @@
 </div>
 
 <script>
-    // ✅ 관리자 전체 근태 조회 API
-    async function loadAllAttendance() {
+    let dataTable;
+
+    // 날짜 포맷 함수 (yyyy-MM-dd HH:mm)
+    function formatDateTime(dt) {
+        if (!dt) return "-";
+        return dt.replace("T", " ").substring(0, 16);
+    }
+
+    // 정상/지각/조퇴 등 상태 표시 컬러
+    function formatNote(note) {
+        if (!note) return `<span class="badge bg-success">정상 출근</span>`;
+        if (note.includes("지각") || note.includes("조퇴")) {
+            return `<span class="badge bg-danger">${note}</span>`;
+        }
+        return `<span class="badge bg-primary">${note}</span>`;
+    }
+
+    async function loadFiltered() {
+        const start = document.getElementById("startDate").value;
+        const end = document.getElementById("endDate").value;
+
         try {
-            const res = await axios.get("/api/attendance/all"); // 전체 조회 API
+            const res = await axios.get("/api/attendance/all", {
+                params: { start, end }
+            });
             const list = res.data;
             const tbody = document.getElementById("attendanceList");
             tbody.innerHTML = "";
-            list.forEach(att => {
-                tbody.innerHTML += `
+
+            if (!list || list.length === 0) {
+                tbody.innerHTML = `
                     <tr>
-                        <td>${att.empId}</td>
-                        <td>${att.empName || '-'}</td>
-                        <td>${att.workDate}</td>
-                        <td>${att.checkIn ? att.checkIn.replace('T', ' ') : '-'}</td>
-                        <td>${att.checkOut ? att.checkOut.replace('T', ' ') : '-'}</td>
-                        <td>${att.note || '정상 출근'}</td>
+                        <td colspan="6" class="text-center text-muted">
+                            😥 조회된 데이터가 없습니다.
+                        </td>
                     </tr>
                 `;
+            } else {
+                list.forEach(att => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${att.empId}</td>
+                            <td>${att.empName || '-'}</td>
+                            <td>${att.workDate}</td>
+                            <td>${formatDateTime(att.checkIn)}</td>
+                            <td>${formatDateTime(att.checkOut)}</td>
+                            <td>${formatNote(att.note)}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // DataTable 초기화 / 갱신
+            if (dataTable) {
+                dataTable.clear().destroy();
+            }
+            dataTable = $('#attendanceTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                pageLength: 10,
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excelHtml5', text: '📊 엑셀 다운로드', title: '근태현황' },
+                    { extend: 'csvHtml5', text: '📄 CSV 다운로드', title: '근태현황' },
+                    { extend: 'print', text: '🖨️ 프린트' }
+                ],
+                language: {
+                    search: "검색:",
+                    lengthMenu: "_MENU_ 개씩 보기",
+                    zeroRecords: "검색 결과가 없습니다.",
+                    info: "총 _TOTAL_건 중 _START_ - _END_",
+                    infoEmpty: "데이터 없음",
+                    paginate: {
+                        first: "처음",
+                        last: "끝",
+                        next: "다음",
+                        previous: "이전"
+                    }
+                }
             });
+
         } catch (err) {
             alert("데이터 로드 실패: " + err);
         }
     }
 
-    window.onload = loadAllAttendance;
+    // 기본 날짜 세팅: 최근 한 달
+    window.onload = () => {
+        const today = new Date().toISOString().split("T")[0];
+        const lastMonth = new Date();
+        lastMonth.setMonth(lastMonth.getMonth() - 1);
+        const lastMonthStr = lastMonth.toISOString().split("T")[0];
+
+        document.getElementById("endDate").value = today;
+        document.getElementById("startDate").value = lastMonthStr;
+
+        loadFiltered();
+    };
 </script>
 </body>
 </html>

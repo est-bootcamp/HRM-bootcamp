@@ -18,20 +18,20 @@ public class AttendanceViewController {
 
         Long empId = null;
         String empName = null;
-        String role = "USER";
+        String role = "USER"; // 기본값
 
         if (principal instanceof CustomUserDetails userDetails) {
             empId = userDetails.getEmpId();
             empName = userDetails.getEmpName();
-            role = userDetails.getRole();
+            role = userDetails.getRole();  // "ADMIN" / "USER"
         }
 
         // 공통 모델 속성
-        model.addAttribute("empId", empId);
-        model.addAttribute("empName", empName);
+        model.addAttribute("empId", empId != null ? empId : 0L);
+        model.addAttribute("empName", empName != null ? empName : "알 수 없음");
         model.addAttribute("role", role);
 
-        // 관리자면 관리자용 페이지로 분기
+        // 관리자면 관리자용 페이지로 이동
         if ("ADMIN".equalsIgnoreCase(role)) {
             return "attendance-admin"; // → templates/attendance-admin.html
         }
