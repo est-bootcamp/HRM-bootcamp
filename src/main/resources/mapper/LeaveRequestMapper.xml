@@ -65,28 +65,28 @@
     <!-- 새로운 휴가 신청 등록 -->
     <insert id="insert" parameterType="com.example.est_bootcamp.leave.LeaveRequest"
             useGeneratedKeys="true" keyProperty="lvId">  /* DB에서 자동 생성된 ID를 다시 받아옴, 생성된 ID를 lvId 필드에 저장 */
-        INSERT INTO LV_RQ (  /* LV_RQ 테이블에 데이터 삽입 */
-            lv_ty
-             , app_emp_id               /* 승인자 직원 ID*/
-             , rqs_emp_id               /* 신청자 직원 ID*/
-             , start_date               /* 휴가 시작일*/
-             , end_date                 /* 휴가 종료일*/
-             , status                   /* 신청 상태*/
-             , request_date             /* 신청일시*/
-             , reg_ip                   /* 등록 IP*/
-             , reg_date                 /* 등록일시*/
-             , reg_us_id                /* 등록 사용자 ID*/
-             , mod_ip                   /* 수정 IP*/
-             , mod_date                 /* 수정일시*/
-             , mod_us_id                /* 수정 사용자 ID*/
-             , use_yn                   /* 사용 여부*/
-             , note                     /* 비고*/
-        ) VALUES (      /* #{변수명}으로 Java 객체의 필드 값을 바인딩 */
-                     #{leaveTypeCode}, #{appEmpId}, #{rqsEmpId},
-                     #{startDate}, #{endDate}, #{status}, #{requestDate},
-                     #{regIp}, #{regDate}, #{regUsId}, #{modIp}, #{modDate}, #{modUsId},
-                     #{useYn}, #{note}
-                 )
+    INSERT INTO LV_RQ (  /* LV_RQ 테이블에 데이터 삽입 */
+                        lv_ty
+                      , app_emp_id               /* 승인자 직원 ID*/
+                      , rqs_emp_id               /* 신청자 직원 ID*/
+                      , start_date               /* 휴가 시작일*/
+                      , end_date                 /* 휴가 종료일*/
+                      , status                   /* 신청 상태*/
+                      , request_date             /* 신청일시*/
+                      , reg_ip                   /* 등록 IP*/
+                      , reg_date                 /* 등록일시*/
+                      , reg_us_id                /* 등록 사용자 ID*/
+                      , mod_ip                   /* 수정 IP*/
+                      , mod_date                 /* 수정일시*/
+                      , mod_us_id                /* 수정 사용자 ID*/
+                      , use_yn                   /* 사용 여부*/
+                      , note                     /* 비고*/
+    ) VALUES (      /* 으로 Java 객체의 필드 값을 바인딩 */
+                 #{leaveTypeCode}, #{appEmpId}, #{rqsEmpId},
+                 #{startDate}, #{endDate}, #{status}, #{requestDate},
+                 #{regIp}, #{regDate}, #{regUsId}, #{modIp}, #{modDate}, #{modUsId},
+                 #{useYn}, #{note}
+             )
     </insert>
 
     <!-- 기존 휴가 신청 정보 수정 -->

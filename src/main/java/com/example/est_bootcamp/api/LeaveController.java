@@ -1,7 +1,10 @@
 package com.example.est_bootcamp.api;
 
 import com.example.est_bootcamp.leave.LeaveRequest;
+import com.example.est_bootcamp.service.EmployeeService;
 import com.example.est_bootcamp.service.LeaveService;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,7 @@ public class LeaveController {
 
     // 휴가 관련 비즈니스 로직 처리를 위한 서비스
     private final LeaveService leaveService;
+    private final EmployeeService employeeService;
 
     // 휴가 신청 목록 조회
     // 데이터 조회만 하고 서버 상태를 변경하지 않기 때문에 GET 사용
@@ -95,5 +99,6 @@ public class LeaveController {
 
         return "redirect:/leave"; // 삭제 후 목록 페이지로 리다이렉트
     }
+
 
 }
