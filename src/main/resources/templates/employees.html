@@ -3,15 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>직원 목록</title>
+    <!-- 커스텀 CSS 적용 (static/css/app.css) -->
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
 <h1>직원 목록</h1>
+
+<!-- 직원 목록 테이블 -->
 <table border="1">
     <thead>
-    <tr><th>ID</th><th>이름</th><th>부서</th></tr>
+    <tr>
+        <!-- 테이블 헤더 -->
+        <th>ID</th>
+        <th>이름</th>
+        <th>부서</th>
+    </tr>
     </thead>
     <tbody>
+<!--
+     직원 목록 반복 출력
+     - ${employees} 는 컨트롤러(Model)에 담긴 직원 리스트
+     - emp.empId : 직원 ID
+     - emp.empName : 직원 이름 (Employee 클래스의 name 필드에 해당하는지 확인 필요)
+     - emp.department.dprName : 직원 소속 부서명 (Employee가 Department 객체를 포함한다고 가정)
+-->
     <tr th:each="emp : ${employees}">
         <td th:text="${emp.empId}"></td>
         <td th:text="${emp.empName}"></td>

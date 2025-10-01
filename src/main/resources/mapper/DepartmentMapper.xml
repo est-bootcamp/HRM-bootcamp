@@ -5,21 +5,24 @@
 
 <mapper namespace="com.example.est_bootcamp.repo.DepartmentMapper">
 
+    <!-- Department 엔티티 기본 매핑 -->
     <resultMap id="DepartmentMap" type="com.example.est_bootcamp.org.Department">
-        <id property="dprId" column="dpr_id"/>
-        <result property="dprCode" column="dpr_code"/>
-        <result property="dprName" column="dpr_name"/>
-        <result property="dprScope" column="dpr_scope"/>
-        <result property="dprDscr" column="dpr_dscr"/>
-        <result property="useYn" column="use_yn"/>
+        <id property="dprId" column="dpr_id"/>        <!-- 부서 PK -->
+        <result property="dprCode" column="dpr_code"/> <!-- 부서 코드 -->
+        <result property="dprName" column="dpr_name"/> <!-- 부서명 -->
+        <result property="dprScope" column="dpr_scope"/> <!-- 부서 범위 -->
+        <result property="dprDscr" column="dpr_dscr"/>   <!-- 부서 설명 -->
+        <result property="useYn" column="use_yn"/>       <!-- 사용 여부 (Y/N) -->
     </resultMap>
 
-    <!-- 단건 조회 -->
+    <!-- 단건 조회 (PK: dpr_id 기준) -->
     <select id="findById" parameterType="long" resultMap="DepartmentMap">
         SELECT * FROM DPR WHERE dpr_id = #{dprId}
     </select>
 
-    <!-- 전체 조회 -->
+    <!-- 전체 조회 (활성화된 부서만 조회)
+         - 동일한 이름이 있을 경우 MIN(dpr_id) 기준으로 대표값 사용
+         - GROUP BY dpr_name 으로 이름별 1건씩만 반환 -->
     <select id="findAll" resultMap="DepartmentMap">
         SELECT MIN(dpr_id) AS dpr_id, dpr_name
         FROM DPR
@@ -28,14 +31,14 @@
         ORDER BY dpr_name
     </select>
 
-    <!-- 등록 -->
+    <!-- 신규 부서 등록 -->
     <insert id="insert" parameterType="com.example.est_bootcamp.org.Department"
             useGeneratedKeys="true" keyProperty="dprId">
         INSERT INTO DPR (dpr_code, dpr_name, dpr_scope, dpr_dscr, use_yn)
         VALUES (#{dprCode}, #{dprName}, #{dprScope}, #{dprDscr}, #{useYn})
     </insert>
 
-    <!-- 수정 -->
+    <!-- 부서 수정 (PK: dpr_id 기준) -->
     <update id="update" parameterType="com.example.est_bootcamp.org.Department">
         UPDATE DPR
         SET dpr_code  = #{dprCode},
@@ -46,7 +49,7 @@
         WHERE dpr_id = #{dprId}
     </update>
 
-    <!-- 삭제 -->
+    <!-- 부서 삭제 (PK 기준 삭제 → 물리 삭제) -->
     <delete id="delete" parameterType="long">
         DELETE FROM DPR WHERE dpr_id = #{dprId}
     </delete>

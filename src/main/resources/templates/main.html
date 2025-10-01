@@ -1,29 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"><head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>HRD Bootcamp | Main</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSS -->
+    <!-- AdminLTE CSS (UI 프레임워크) -->
     <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
 
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-    <!-- Navbar -->
+    <!-- 상단 네비게이션 바 -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
+        <!-- 왼쪽 메뉴 버튼 -->
         <ul class="navbar-nav">
             <li class="nav-item">
+                <!-- 사이드바 토글 버튼 -->
                 <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
             </li>
+            <!-- Home 버튼 -->
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="/main" class="nav-link">Home</a>
             </li>
         </ul>
 
-        <!-- Right navbar links -->
+        <!-- 오른쪽 로그아웃 버튼 -->
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <a href="/logout" class="btn btn-sm btn-danger">로그아웃</a>
@@ -31,40 +34,49 @@
         </ul>
     </nav>
 
-    <!-- Sidebar -->
+    <!-- 사이드바 영역 -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- 브랜드 로고 -->
         <a href="/main" class="brand-link">
             <span class="brand-text font-weight-light">HRD Bootcamp</span>
         </a>
         <div class="sidebar">
+            <!-- 로그인 사용자 정보 표시 -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
                     <img src="/img/userIcon.png" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
+                    <!-- Spring Security 인증 객체에서 사용자명 표시 -->
                     <a href="#" class="d-block" th:text="${#authentication.name}">로그인유저</a>
                 </div>
             </div>
+
+            <!-- 메뉴 네비게이션 -->
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column">
+                    <!-- 직원 관리 -->
                     <li class="nav-item">
                         <a href="/employees" class="nav-link">
                             <i class="nav-icon fas fa-users"></i>
                             <p>직원 관리</p>
                         </a>
                     </li>
+                    <!-- 출퇴근 관리 -->
                     <li class="nav-item">
                         <a href="/attendance" class="nav-link">
                             <i class="nav-icon fas fa-calendar-check"></i>
                             <p>출퇴근 관리</p>
                         </a>
                     </li>
+                    <!-- 휴가 관리 -->
                     <li class="nav-item">
                         <a href="/leave" class="nav-link">
                             <i class="nav-icon fas fa-plane"></i>
                             <p>휴가 관리</p>
                         </a>
                     </li>
+                    <!-- 사건 관리 -->
                     <li class="nav-item">
                         <a href="/cases" class="nav-link">
                             <i class="nav-icon fas fa-plane"></i>
@@ -76,17 +88,20 @@
         </div>
     </aside>
 
-    <!-- Content Wrapper -->
+    <!-- 메인 콘텐츠 영역 -->
     <div class="content-wrapper">
+        <!-- 페이지 헤더 -->
         <section class="content-header">
             <div class="container-fluid">
                 <h1>메인 대시보드</h1>
             </div>
         </section>
 
+        <!-- 실제 콘텐츠 -->
         <section class="content">
             <div class="card">
                 <div class="card-body">
+                    <!-- 사용자 이름 출력 -->
                     <p>환영합니다, <span th:text="${#authentication.name}">사용자</span>님!</p>
                     <p>여기서 직원 관리, 근태 관리, 휴가 관리 기능을 사용할 수 있습니다.</p>
                 </div>
@@ -94,23 +109,23 @@
         </section>
     </div>
 
-    <!-- Footer -->
+    <!-- 푸터 -->
     <footer class="main-footer text-center">
         <strong>&copy; 2025 HRD Bootcamp.</strong> All rights reserved.
     </footer>
 </div>
 
-<!-- JS -->
-<!-- ✅ jQuery 먼저 -->
+<!-- JS 로딩 순서 -->
+<!-- jQuery (AdminLTE/Bootstrap 필수) -->
 <script src="/plugins/jquery/jquery.min.js"></script>
 
-<!-- ✅ Bootstrap (jQuery 필요) -->
+<!-- Bootstrap JS (jQuery 의존) -->
 <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-<!-- ✅ AdminLTE Core -->
+<!-- AdminLTE Core JS -->
 <script src="/dist/js/adminlte.min.js"></script>
 
-<!-- ✅ 페이지별 스크립트 -->
+<!-- 페이지별 스크립트 (예: 사이드바 토글 관련) -->
 <script src="/dist/js/pages/ControlSidebar.js"></script>
 </body>
 </html>

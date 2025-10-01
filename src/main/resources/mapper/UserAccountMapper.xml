@@ -7,35 +7,36 @@
 
     <!-- UserAccount 기본 매핑 -->
     <resultMap id="UserAccountMap" type="com.example.est_bootcamp.user.UserAccount">
-        <id property="usNo" column="us_no"/>
-        <result property="loginId" column="login_id"/>
-        <result property="password" column="password"/>
-        <result property="regIp" column="reg_ip"/>
-        <result property="regDate" column="reg_date"/>
-        <result property="regUsId" column="reg_us_id"/>
-        <result property="modIp" column="mod_ip"/>
-        <result property="modDate" column="mod_date"/>
-        <result property="modUsId" column="mod_us_id"/>
-        <result property="useYn" column="use_yn"/>
-        <result property="note" column="note"/>
-        <result property="usRole" column="us_role"/>
+        <id property="usNo" column="us_no"/>             <!-- PK -->
+        <result property="loginId" column="login_id"/>   <!-- 로그인 ID -->
+        <result property="password" column="password"/>  <!-- 암호화된 비밀번호 -->
+        <result property="regIp" column="reg_ip"/>       <!-- 등록자 IP -->
+        <result property="regDate" column="reg_date"/>   <!-- 등록일시 -->
+        <result property="regUsId" column="reg_us_id"/>  <!-- 등록자 ID -->
+        <result property="modIp" column="mod_ip"/>       <!-- 수정자 IP -->
+        <result property="modDate" column="mod_date"/>   <!-- 수정일시 -->
+        <result property="modUsId" column="mod_us_id"/>  <!-- 수정자 ID -->
+        <result property="useYn" column="use_yn"/>       <!-- 사용 여부 (Y/N) -->
+        <result property="note" column="note"/>          <!-- 비고 -->
+        <result property="usRole" column="us_role"/>     <!-- 사용자 역할 (권한) -->
     </resultMap>
 
-    <!-- UserAccount + Employee JOIN 매핑 -->
+    <!-- UserAccount + Employee JOIN 매핑 (직원 정보까지 함께 조회) -->
     <resultMap id="UserAccountWithEmployeeMap" type="com.example.est_bootcamp.user.UserAccount" extends="UserAccountMap">
         <association property="employee" javaType="com.example.est_bootcamp.emp.Employee">
-            <id property="empId" column="emp_id"/>
-            <result property="usNo" column="us_no"/>
-            <result property="dprId" column="dpr_id"/>
-            <result property="pstId" column="pst_id"/>
-            <result property="name" column="name"/>
-            <result property="email" column="email"/>
-            <result property="phone" column="phone"/>
-            <result property="hireDate" column="hire_date"/>
-            <result property="resignDate" column="resign_date"/>
-            <result property="status" column="status"/>
-            <result property="address" column="address"/>
-            <result property="gender" column="gender"/>
+            <id property="empId" column="emp_id"/>          <!-- 직원 PK -->
+            <result property="usNo" column="us_no"/>        <!-- 사용자 번호 (FK) -->
+            <result property="dprId" column="dpr_id"/>      <!-- 부서 ID -->
+            <result property="pstId" column="pst_id"/>      <!-- 직급 ID -->
+            <result property="name" column="name"/>         <!-- 이름 -->
+            <result property="email" column="email"/>       <!-- 이메일 -->
+            <result property="phone" column="phone"/>       <!-- 연락처 -->
+            <result property="hireDate" column="hire_date"/>   <!-- 입사일 -->
+            <result property="resignDate" column="resign_date"/> <!-- 퇴사일 -->
+            <result property="status" column="status"/>     <!-- 재직 상태 -->
+            <result property="address" column="address"/>   <!-- 주소 -->
+            <result property="gender" column="gender"/>     <!-- 성별 -->
+            <!-- 직원 관련 등록/수정 정보 -->
             <result property="regIp" column="e_reg_ip"/>
             <result property="regDate" column="e_reg_date"/>
             <result property="regUsId" column="e_reg_us_id"/>
@@ -47,7 +48,7 @@
         </association>
     </resultMap>
 
-    <!-- 단건 조회: loginId + Employee JOIN -->
+    <!-- 단건 조회 (loginId 기준 + Employee 조인) -->
     <select id="findWithEmployeeByLoginId" parameterType="string" resultMap="UserAccountWithEmployeeMap">
         SELECT u.*,
         e.emp_id, e.us_no, e.dpr_id, e.pst_id, e.name, e.email, e.phone,
@@ -60,17 +61,17 @@
         WHERE u.login_id = #{loginId}
     </select>
 
-    <!-- 단건 조회: loginId -->
+    <!-- 단건 조회 (loginId 기준, 직원정보 미포함) -->
     <select id="findByLoginId" parameterType="string" resultMap="UserAccountMap">
         SELECT * FROM US WHERE login_id = #{loginId}
     </select>
 
-    <!-- 단건 조회: PK -->
+    <!-- 단건 조회 (PK: usNo 기준) -->
     <select id="findById" parameterType="long" resultMap="UserAccountMap">
         SELECT * FROM US WHERE us_no = #{usNo}
     </select>
 
-    <!-- 등록 -->
+    <!-- 신규 사용자 등록 -->
     <insert id="insert" parameterType="com.example.est_bootcamp.user.UserAccount"
             useGeneratedKeys="true" keyProperty="usNo">
         INSERT INTO US (
@@ -83,7 +84,7 @@
         )
     </insert>
 
-    <!-- 수정 -->
+    <!-- 사용자 정보 수정 -->
     <update id="update" parameterType="com.example.est_bootcamp.user.UserAccount">
         UPDATE US
         SET login_id = #{loginId},
@@ -94,13 +95,13 @@
         mod_ip = #{modIp},
         mod_date = #{modDate},
         mod_us_id = #{modUsId},
-        useYn = #{useYn},
+        use_yn = #{useYn},
         note = #{note},
         us_role = #{usRole}
         WHERE us_no = #{usNo}
     </update>
 
-    <!-- 삭제 -->
+    <!-- 사용자 삭제 -->
     <delete id="delete" parameterType="long">
         DELETE FROM US WHERE us_no = #{usNo}
     </delete>

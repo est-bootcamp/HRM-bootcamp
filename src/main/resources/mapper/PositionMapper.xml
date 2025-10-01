@@ -5,21 +5,24 @@
 
 <mapper namespace="com.example.est_bootcamp.repo.PositionMapper">
 
+    <!-- Position 엔티티 기본 매핑 -->
     <resultMap id="PositionMap" type="com.example.est_bootcamp.org.Position">
-        <id property="pstId" column="pst_id"/>
-        <result property="pstCode" column="pst_code"/>
-        <result property="pstName" column="pst_name"/>
-        <result property="pstDscr" column="pst_dscr"/>
-        <result property="level" column="level"/>
-        <result property="useYn" column="use_yn"/>
+        <id property="pstId" column="pst_id"/>         <!-- 직급 PK -->
+        <result property="pstCode" column="pst_code"/> <!-- 직급 코드 -->
+        <result property="pstName" column="pst_name"/> <!-- 직급명 -->
+        <result property="pstDscr" column="pst_dscr"/> <!-- 직급 설명 -->
+        <result property="level" column="level"/>      <!-- 직급 레벨 (상위/하위 구분 등) -->
+        <result property="useYn" column="use_yn"/>     <!-- 사용 여부 (Y/N) -->
     </resultMap>
 
-    <!-- 단건 조회 -->
+    <!-- 단건 조회 (PK: pst_id 기준) -->
     <select id="findById" parameterType="long" resultMap="PositionMap">
         SELECT * FROM PST WHERE pst_id = #{pstId}
     </select>
 
-    <!-- 전체 조회 -->
+    <!-- 전체 조회 (활성화된 직급만 조회)
+         - 동일한 직급명이 여러 개 있을 경우 MIN(pst_id) 기준으로 대표값 반환
+         - 직급명을 기준으로 정렬 -->
     <select id="findAll" resultMap="PositionMap">
         SELECT MIN(pst_id) AS pst_id, pst_name
         FROM PST
@@ -28,14 +31,14 @@
         ORDER BY pst_name
     </select>
 
-    <!-- 등록 -->
+    <!-- 직급 등록 -->
     <insert id="insert" parameterType="com.example.est_bootcamp.org.Position"
             useGeneratedKeys="true" keyProperty="pstId">
         INSERT INTO PST (pst_code, pst_name, pst_dscr, level, use_yn)
         VALUES (#{pstCode}, #{pstName}, #{pstDscr}, #{level}, #{useYn})
     </insert>
 
-    <!-- 수정 -->
+    <!-- 직급 수정 (PK: pst_id 기준) -->
     <update id="update" parameterType="com.example.est_bootcamp.org.Position">
         UPDATE PST
         SET pst_code = #{pstCode},
@@ -46,7 +49,7 @@
         WHERE pst_id = #{pstId}
     </update>
 
-    <!-- 삭제 -->
+    <!-- 직급 삭제 (PK 기준 → 물리 삭제) -->
     <delete id="delete" parameterType="long">
         DELETE FROM PST WHERE pst_id = #{pstId}
     </delete>

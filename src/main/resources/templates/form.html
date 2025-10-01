@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>직원 등록/수정</title>
+    <!-- AdminLTE CSS 적용 -->
     <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
 </head>
 <body>
@@ -13,31 +14,39 @@
         <a th:href="@{/main}" class="btn btn-outline-primary">🏠 홈</a>
     </div>
 
+    <!-- 제목: 신규 등록인지 수정인지에 따라 동적으로 변경 -->
     <h2 th:text="${employee.empId == null ? '직원 등록' : '직원 수정'}"></h2>
 
-    <!-- 에러 메시지 표시 -->
+    <!-- 에러 메시지 표시 (컨트롤러에서 전달된 errorMessage) -->
     <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
         <span th:text="${errorMessage}"></span>
     </div>
 
-    <!-- 항상 /employees 로 전송 -->
+<!--
+     등록/수정 공용 Form
+         - 항상 /employees 로 POST 요청
+         - employee 객체를 바인딩(th:object)
+-->
     <form th:action="@{/employees}" th:object="${employee}" method="post">
-        <!-- CSRF 토큰 추가 -->
+        <!-- CSRF 토큰 (Spring Security) -->
         <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
 
-        <!-- 수정 시 PK 값 -->
+        <!-- 수정 시 필요한 PK(empId) -->
         <input type="hidden" th:field="*{empId}"/>
 
+        <!-- 이름 입력 -->
         <div class="form-group">
             <label for="name">이름</label>
             <input type="text" th:field="*{name}" id="name" class="form-control" required>
         </div>
 
+        <!-- 이메일 입력 -->
         <div class="form-group">
             <label for="email">이메일</label>
             <input type="email" th:field="*{email}" id="email" class="form-control" required>
         </div>
 
+        <!-- 연락처 입력 -->
         <div class="form-group">
             <label for="phone">연락처</label>
             <input type="text" th:field="*{phone}" id="phone" class="form-control">
@@ -47,7 +56,9 @@
         <div class="form-group">
             <label for="dprId">부서</label>
             <select th:field="*{dprId}" id="dprId" class="form-control" required>
+                <!-- 기본 선택 옵션 -->
                 <option value="" th:if="${employee.dprId == null}" selected>-- 부서 선택 --</option>
+                <!-- departments 리스트에서 옵션 생성 -->
                 <option th:each="dept : ${departments}"
                         th:value="${dept.dprId}"
                         th:text="${dept.dprName}">
@@ -67,7 +78,7 @@
             </select>
         </div>
 
-        <!-- 성별 선택 -->
+        <!-- 성별 선택 (라디오 버튼) -->
         <div class="form-group">
             <label>성별</label><br>
             <div class="form-check form-check-inline">
@@ -90,7 +101,7 @@
             </select>
         </div>
 
-        <!-- 사용 여부 -->
+        <!-- 사용 여부 선택 -->
         <div class="form-group">
             <label for="useYn">사용 여부</label>
             <select th:field="*{useYn}" id="useYn" class="form-control" required>
