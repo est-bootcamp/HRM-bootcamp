@@ -20,8 +20,10 @@ public class EmployeeController {
     private final EmployeeService service;
 
     /**
-     * 직원 목록 (검색 + 페이지네이션)
-     * 예: GET /api/employees?page=1&size=10&keyword=홍길동
+     * 직원 목록 조회 API (검색 + 페이지네이션 지원)
+     * - GET /api/employees?page=1&size=10&keyword=홍길동
+     * - 기본값: page=1, size=10, keyword=""
+     * - 응답: PageResponse<Employee>
      */
     @GetMapping
     public PageResponse<Employee> getEmployees(
@@ -33,7 +35,10 @@ public class EmployeeController {
     }
 
     /**
-     * 직원 단건 조회
+     * 직원 단건 조회 API
+     * - GET /api/employees/{id}
+     * - 응답: Employee JSON
+     * - 예외: 해당 ID가 없으면 NoSuchElementException 발생 (ControllerAdvice로 처리 권장)
      */
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getById(@PathVariable Long id) {
@@ -42,7 +47,10 @@ public class EmployeeController {
     }
 
     /**
-     * 직원 등록
+     * 직원 등록 API
+     * - POST /api/employees
+     * - 요청 Body: Employee JSON
+     * - 응답: 201 Created + Location 헤더에 생성된 직원 리소스 경로 반환
      */
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody Employee employee) {
@@ -53,7 +61,11 @@ public class EmployeeController {
     }
 
     /**
-     * 직원 수정
+     * 직원 수정 API
+     * - PUT /api/employees/{id}
+     * - 요청 Body: Employee JSON
+     * - PathVariable {id} 값과 Body의 empId를 동기화
+     * - 응답: 204 No Content (성공했지만 반환 데이터 없음)
      */
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Employee employee) {
@@ -63,21 +75,27 @@ public class EmployeeController {
     }
 
     /**
-     * 직원 삭제
+     * 직원 삭제 API (소프트 삭제)
+     * - DELETE /api/employees/{id}
+     * - 요청자 정보(Authentication)와 IP(HttpServletRequest)를 함께 기록
+     * - 실제 삭제가 아닌 useYn='N' 업데이트
+     * - 응답: 204 No Content
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id,
                                        HttpServletRequest request,
                                        Authentication authentication) {
 
+        // 로그인 사용자 정보 가져오기
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
+        // 삭제 대상 Employee 생성 (소프트 삭제 기록용)
         Employee employee = new Employee();
         employee.setEmpId(id);
-        employee.setModIp(request.getRemoteAddr());
-        employee.setModUsId(user.getUserId());
+        employee.setModIp(request.getRemoteAddr()); // 요청자 IP
+        employee.setModUsId(user.getUserId());      // 수정한 사용자 ID
 
         service.delete(employee);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();  // 204 No Content
     }
 }

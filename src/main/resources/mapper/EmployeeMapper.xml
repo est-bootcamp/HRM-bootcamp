@@ -5,6 +5,11 @@
 
 <mapper namespace="com.example.est_bootcamp.repo.EmployeeMapper">
 
+<!--
+    Employee 엔티티와 DB 테이블 매핑
+    - resultMap: DB 컬럼명과 VO/DTO 필드 매칭
+    - dprName, pstName은 JOIN으로 가져오는 값
+-->
     <resultMap id="EmployeeMap" type="com.example.est_bootcamp.emp.Employee">
         <id property="empId" column="emp_id"/>
         <result property="usNo" column="us_no"/>
@@ -30,7 +35,11 @@
         <result property="pstName" column="pstName"/>
     </resultMap>
 
-    <!-- 직원 단건 조회 -->
+<!--
+        직원 단건 조회
+        - PK(emp_id) 기준으로 상세 조회
+        - 부서명, 직급명도 JOIN으로 가져옴
+-->
     <select id="findById" parameterType="long" resultMap="EmployeeMap">
         SELECT
         e.emp_id,
@@ -61,7 +70,10 @@
         WHERE e.emp_id = #{empId}
     </select>
 
-    <!-- 전체 조회 -->
+<!--
+        직원 전체 조회
+        - 소프트 삭제(use_yn='Y') 된 데이터만 가져옴
+-->
     <select id="findAll" resultMap="EmployeeMap">
         SELECT
         e.emp_id,
@@ -88,7 +100,12 @@
         WHERE e.use_yn = 'Y'
     </select>
 
-    <!-- 검색 + 페이징 조회 -->
+<!--
+        직원 목록 (검색 + 페이징)
+        - 이름, 이메일, 전화번호에 검색 가능
+        - OFFSET, LIMIT 으로 페이징 처리
+        - 기본 조건: use_yn='Y'
+-->
     <select id="findAllPaged" resultMap="EmployeeMap">
         SELECT
         e.emp_id,
@@ -115,7 +132,10 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <!-- 검색 포함 총 건수 -->
+<!--
+        직원 총 건수 조회 (검색 포함)
+        - 검색 조건이 있으면 해당 조건에 맞는 직원 수 반환
+-->
     <select id="count" resultType="int">
         SELECT COUNT(*)
         FROM EMP e
@@ -129,7 +149,10 @@
         </where>
     </select>
 
-    <!-- 사용자 번호 기반 조회 -->
+<!--
+        사용자 번호(us_no) 기반 직원 조회
+        - 로그인 사용자와 직원 연결할 때 사용
+-->
     <select id="findByUserNo" parameterType="long" resultMap="EmployeeMap">
         SELECT e.*
         FROM EMP e
@@ -137,7 +160,11 @@
         AND e.use_yn = 'Y'
     </select>
 
-    <!-- 직원 등록 -->
+<!--
+        직원 등록
+        - useGeneratedKeys=true → empId 자동 생성 (AUTO_INCREMENT)
+        - 등록 시 reg_date, mod_date는 NOW()로 세팅
+-->
     <insert id="insert" parameterType="com.example.est_bootcamp.emp.Employee"
             useGeneratedKeys="true" keyProperty="empId">
         INSERT INTO EMP (
@@ -184,7 +211,11 @@
         )
     </insert>
 
-    <!-- 직원 수정 -->
+<!--
+        직원 수정
+        - emp_id 기준으로 업데이트
+        - mod_date는 NOW() 자동 업데이트
+-->
     <update id="update" parameterType="com.example.est_bootcamp.emp.Employee">
         UPDATE EMP
         SET
@@ -210,7 +241,11 @@
         WHERE emp_id = #{empId}
     </update>
 
-    <!-- 직원 삭제 (소프트 삭제) -->
+<!--
+        직원 삭제 (소프트 삭제 방식)
+        - 실제 삭제하지 않고 use_yn = 'N' 으로 처리
+        - 삭제 시 mod_date, mod_us_id, mod_ip 갱신
+-->
     <update id="delete" parameterType="com.example.est_bootcamp.emp.Employee">
         UPDATE EMP
         SET use_yn = 'N',
